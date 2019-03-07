@@ -56,7 +56,7 @@
     </bean>
 
     <!-- 扫描service -->
-    <context:component-scan base-package="com.jhr.service"></context:component-scan>
+    <context:component-scan base-package="com.jhr.serviceImpl"></context:component-scan>
 
     <!-- 事务的配置 -->
     <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -64,9 +64,9 @@
     </bean>
     <tx:advice id="txAdvice" transaction-manager="txManager">
         <tx:attributes>
-            <tx:method name="add*" propagation="REQUIRED"/>
-            <tx:method name="up*" propagation="REQUIRED"/>
-            <tx:method name="del*" propagation="REQUIRED"/>
+            <tx:method name="insert*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
         </tx:attributes>
     </tx:advice>
     <aop:config>
