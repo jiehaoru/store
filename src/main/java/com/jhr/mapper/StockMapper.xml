@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jhr.dao.StockMapper" >
+  <resultMap id="BaseResultMap" type="com.jhr.entity.Stock" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="numstr" property="numstr" jdbcType="VARCHAR" />
+    <result column="innumber" property="innumber" jdbcType="BIGINT" />
+    <result column="nownumber" property="nownumber" jdbcType="BIGINT" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="filed1" property="filed1" jdbcType="VARCHAR" />
+    <result column="filed2" property="filed2" jdbcType="VARCHAR" />
+    <result column="filed3" property="filed3" jdbcType="VARCHAR" />
+    <result column="filed4" property="filed4" jdbcType="VARCHAR" />
+    <result column="filed5" property="filed5" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from stock
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.jhr.entity.Stock" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into stock (numstr, innumber, nownumber, 
+      flag, `operator`, createtime, 
+      filed1, filed2, filed3, 
+      filed4, filed5)
+    values (#{numstr,jdbcType=VARCHAR}, #{innumber,jdbcType=BIGINT}, #{nownumber,jdbcType=BIGINT}, 
+      #{flag,jdbcType=INTEGER}, #{operator,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{filed1,jdbcType=VARCHAR}, #{filed2,jdbcType=VARCHAR}, #{filed3,jdbcType=VARCHAR}, 
+      #{filed4,jdbcType=VARCHAR}, #{filed5,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.jhr.entity.Stock" >
+    update stock
+    set numstr = #{numstr,jdbcType=VARCHAR},
+      innumber = #{innumber,jdbcType=BIGINT},
+      nownumber = #{nownumber,jdbcType=BIGINT},
+      flag = #{flag,jdbcType=INTEGER},
+      `operator` = #{operator,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      filed1 = #{filed1,jdbcType=VARCHAR},
+      filed2 = #{filed2,jdbcType=VARCHAR},
+      filed3 = #{filed3,jdbcType=VARCHAR},
+      filed4 = #{filed4,jdbcType=VARCHAR},
+      filed5 = #{filed5,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, numstr, innumber, nownumber, flag, `operator`, createtime, filed1, filed2, 
+    filed3, filed4, filed5
+    from stock
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, numstr, innumber, nownumber, flag, `operator`, createtime, filed1, filed2, 
+    filed3, filed4, filed5
+    from stock
+  </select>
+</mapper>

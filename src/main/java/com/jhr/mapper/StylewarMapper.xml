@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jhr.dao.StylewarMapper" >
+  <resultMap id="BaseResultMap" type="com.jhr.entity.Stylewar" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="styleID" property="styleid" jdbcType="BIGINT" />
+    <result column="warehousingID" property="warehousingid" jdbcType="BIGINT" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from stylewar
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.jhr.entity.Stylewar" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into stylewar (styleID, warehousingID)
+    values (#{styleid,jdbcType=BIGINT}, #{warehousingid,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.jhr.entity.Stylewar" >
+    update stylewar
+    set styleID = #{styleid,jdbcType=BIGINT},
+      warehousingID = #{warehousingid,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, styleID, warehousingID
+    from stylewar
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, styleID, warehousingID
+    from stylewar
+  </select>
+</mapper>

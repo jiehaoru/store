@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jhr.dao.StyleMapper" >
+  <resultMap id="BaseResultMap" type="com.jhr.entity.Style" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="styleID" property="styleid" jdbcType="BIGINT" />
+    <result column="styleName" property="stylename" jdbcType="VARCHAR" />
+    <result column="colour" property="colour" jdbcType="VARCHAR" />
+    <result column="standard" property="standard" jdbcType="VARCHAR" />
+    <result column="size" property="size" jdbcType="VARCHAR" />
+    <result column="material" property="material" jdbcType="VARCHAR" />
+    <result column="numstr" property="numstr" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="DOUBLE" />
+    <result column="picture" property="picture" jdbcType="VARCHAR" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="filed1" property="filed1" jdbcType="VARCHAR" />
+    <result column="filed2" property="filed2" jdbcType="VARCHAR" />
+    <result column="filed3" property="filed3" jdbcType="VARCHAR" />
+    <result column="filed4" property="filed4" jdbcType="VARCHAR" />
+    <result column="filed5" property="filed5" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from style
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.jhr.entity.Style" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into style (styleID, styleName, colour, 
+      `standard`, `size`, material, 
+      numstr, price, picture, 
+      flag, `operator`, createtime, 
+      filed1, filed2, filed3, 
+      filed4, filed5)
+    values (#{styleid,jdbcType=BIGINT}, #{stylename,jdbcType=VARCHAR}, #{colour,jdbcType=VARCHAR}, 
+      #{standard,jdbcType=VARCHAR}, #{size,jdbcType=VARCHAR}, #{material,jdbcType=VARCHAR}, 
+      #{numstr,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE}, #{picture,jdbcType=VARCHAR}, 
+      #{flag,jdbcType=INTEGER}, #{operator,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{filed1,jdbcType=VARCHAR}, #{filed2,jdbcType=VARCHAR}, #{filed3,jdbcType=VARCHAR}, 
+      #{filed4,jdbcType=VARCHAR}, #{filed5,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.jhr.entity.Style" >
+    update style
+    set styleID = #{styleid,jdbcType=BIGINT},
+      styleName = #{stylename,jdbcType=VARCHAR},
+      colour = #{colour,jdbcType=VARCHAR},
+      `standard` = #{standard,jdbcType=VARCHAR},
+      `size` = #{size,jdbcType=VARCHAR},
+      material = #{material,jdbcType=VARCHAR},
+      numstr = #{numstr,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DOUBLE},
+      picture = #{picture,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=INTEGER},
+      `operator` = #{operator,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      filed1 = #{filed1,jdbcType=VARCHAR},
+      filed2 = #{filed2,jdbcType=VARCHAR},
+      filed3 = #{filed3,jdbcType=VARCHAR},
+      filed4 = #{filed4,jdbcType=VARCHAR},
+      filed5 = #{filed5,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, styleID, styleName, colour, `standard`, `size`, material, numstr, price, 
+    picture, flag, `operator`, createtime, filed1, filed2, filed3, filed4, filed5
+    from style
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, styleID, styleName, colour, `standard`, `size`, material, numstr, price, 
+    picture, flag, `operator`, createtime, filed1, filed2, filed3, filed4, filed5
+    from style
+  </select>
+</mapper>
