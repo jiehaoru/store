@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jhr.dao.StylefunMapper" >
+  <resultMap id="BaseResultMap" type="com.jhr.entity.Stylefun" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="styleID" property="styleid" jdbcType="BIGINT" />
+    <result column="refundsID" property="refundsid" jdbcType="BIGINT" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from stylefun
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.jhr.entity.Stylefun" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into stylefun (styleID, refundsID)
+    values (#{styleid,jdbcType=BIGINT}, #{refundsid,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.jhr.entity.Stylefun" >
+    update stylefun
+    set styleID = #{styleid,jdbcType=BIGINT},
+      refundsID = #{refundsid,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, styleID, refundsID
+    from stylefun
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, styleID, refundsID
+    from stylefun
+  </select>
+</mapper>

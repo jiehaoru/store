@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+    <!-- 引入db.properties -->
+    <context:property-placeholder location="classpath:config/db.properties"/>
+
+    <!-- 配置dataSource -->
+    <!--dbcp-->
+    <!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">-->
+        <!--<property name="driverClassName" value="${jdbc.driver}"></property>-->
+        <!--<property name="url" value="${jdbc.url}"></property>-->
+        <!--<property name="username" value="${jdbc.username}"></property>-->
+        <!--<property name="password" value="${jdbc.password}"></property>-->
+        <!--<property name="maxActive" value="100"></property>-->
+        <!--<property name="maxIdle" value="20"></property>-->
+    <!--</bean>-->
+
+    <!--c3p0-->
+    <bean id="dataSource"
+          class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close">
+        <property name="driverClass"
+                  value="${jdbc.driver}">
+        </property>
+        <property name="jdbcUrl"
+                  value="${jdbc.url}">
+        </property>
+        <property name="user" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+        <property name="testConnectionOnCheckin" value="false"/>
+        <property name="testConnectionOnCheckout" value="true"/>
+
+    </bean>
+
+    <!-- 配置sqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <!-- 扫描mapper -->
+        <property name="mapperLocations" value="classpath:com/jhr/mapper/*Mapper.xml"></property>
+        <!-- 扫描entity -->
+        <property name="typeAliasesPackage" value="com.jhr.entity"></property>
+    </bean>
+
+    <!-- 扫描dao自动反射成实体类 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.jhr.dao"></property>
+    </bean>
+
+    <!-- 扫描service -->
+    <context:component-scan base-package="com.jhr.service"></context:component-scan>
+
+    <!-- 事务的配置 -->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="add*" propagation="REQUIRED"/>
+            <tx:method name="up*" propagation="REQUIRED"/>
+            <tx:method name="del*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        <aop:pointcut expression="execution(* com.jhr.serviceImpl.*(..))" id="pointcut"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut"/>
+    </aop:config>
+    <!-- 开启文件上传支持 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"></bean>
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+

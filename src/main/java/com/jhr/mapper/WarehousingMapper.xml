@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jhr.dao.WarehousingMapper" >
+  <resultMap id="BaseResultMap" type="com.jhr.entity.Warehousing" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="numstr" property="numstr" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="BIGINT" />
+    <result column="intotime" property="intotime" jdbcType="TIMESTAMP" />
+    <result column="radeprice" property="radeprice" jdbcType="DOUBLE" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="filed1" property="filed1" jdbcType="VARCHAR" />
+    <result column="filed2" property="filed2" jdbcType="VARCHAR" />
+    <result column="filed3" property="filed3" jdbcType="VARCHAR" />
+    <result column="filed4" property="filed4" jdbcType="VARCHAR" />
+    <result column="filed5" property="filed5" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from warehousing
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.jhr.entity.Warehousing" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into warehousing (numstr, `number`, intotime, 
+      radeprice, flag, `operator`, 
+      createtime, filed1, filed2, 
+      filed3, filed4, filed5
+      )
+    values (#{numstr,jdbcType=VARCHAR}, #{number,jdbcType=BIGINT}, #{intotime,jdbcType=TIMESTAMP}, 
+      #{radeprice,jdbcType=DOUBLE}, #{flag,jdbcType=INTEGER}, #{operator,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{filed1,jdbcType=VARCHAR}, #{filed2,jdbcType=VARCHAR}, 
+      #{filed3,jdbcType=VARCHAR}, #{filed4,jdbcType=VARCHAR}, #{filed5,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.jhr.entity.Warehousing" >
+    update warehousing
+    set numstr = #{numstr,jdbcType=VARCHAR},
+      `number` = #{number,jdbcType=BIGINT},
+      intotime = #{intotime,jdbcType=TIMESTAMP},
+      radeprice = #{radeprice,jdbcType=DOUBLE},
+      flag = #{flag,jdbcType=INTEGER},
+      `operator` = #{operator,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      filed1 = #{filed1,jdbcType=VARCHAR},
+      filed2 = #{filed2,jdbcType=VARCHAR},
+      filed3 = #{filed3,jdbcType=VARCHAR},
+      filed4 = #{filed4,jdbcType=VARCHAR},
+      filed5 = #{filed5,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, numstr, `number`, intotime, radeprice, flag, `operator`, createtime, filed1, 
+    filed2, filed3, filed4, filed5
+    from warehousing
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, numstr, `number`, intotime, radeprice, flag, `operator`, createtime, filed1, 
+    filed2, filed3, filed4, filed5
+    from warehousing
+  </select>
+</mapper>
