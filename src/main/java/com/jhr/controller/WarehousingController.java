@@ -24,7 +24,7 @@ import java.util.List;
  * @create 2019/03/10 16:27
  */
 @Controller
-public class  WarehousingController{
+public class  WarehousingController extends  BaseController {
 
     public static final Logger LOGGER=LoggerFactory.getLogger(WarehousingController.class);
 

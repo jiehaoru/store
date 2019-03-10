@@ -25,7 +25,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/style")
-public class StyleController {
+public class StyleController extends BaseController {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(StyleController.class);
 

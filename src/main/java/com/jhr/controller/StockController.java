@@ -26,7 +26,7 @@ import java.util.List;
  * @create 2019/03/10 12:22
  */
 @Controller
-public class StockController {
+public class StockController extends BaseController {
 
     public static final Logger LOGGER=LoggerFactory.getLogger(StockController.class);
     @Autowired

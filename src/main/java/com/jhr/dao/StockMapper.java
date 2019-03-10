@@ -1,8 +1,11 @@
 package com.jhr.dao;
 
 import com.jhr.entity.Stock;
+import org.apache.ibatis.annotations.Mapper;
+
 import java.util.List;
 
+@Mapper
 public interface StockMapper {
     int deleteByPrimaryKey(Long id);
 

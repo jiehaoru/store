@@ -1,8 +1,11 @@
 package com.jhr.dao;
 
 import com.jhr.entity.Stylesto;
+import org.apache.ibatis.annotations.Mapper;
+
 import java.util.List;
 
+@Mapper
 public interface StylestoMapper {
     int deleteByPrimaryKey(Long id);
 

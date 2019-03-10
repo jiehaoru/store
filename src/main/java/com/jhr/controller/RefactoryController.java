@@ -24,7 +24,7 @@ import java.util.List;
  * @create 2019/03/10 17:24
  */
 @Controller
-public class RefactoryController {
+public class RefactoryController extends BaseController {
 
     public static final Logger LOGGER=LoggerFactory.getLogger(RefactoryController.class);
 
