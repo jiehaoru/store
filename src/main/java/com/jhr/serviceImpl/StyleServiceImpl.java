@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <br>
  * 标题：
@@ -31,5 +33,36 @@ public class StyleServiceImpl implements StyleService {
     public int insertStyle(Style style) throws Exception {
 
        return styleMapper.insert(style);
+    }
+
+    @Override
+    public List<Style> selectStyleList() {
+        return null;
+    }
+
+    @Override
+    public Style selectStyleByPrimaryKey(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<Style> selectStyleBy(Style style) {
+        return null;
+    }
+
+
+    @Override
+    public int updateByPrimaryKey(Style style) {
+        return 0;
+    }
+
+    @Override
+    public int deleteByPrimaryKey(Long id) {
+        return 0;
+    }
+
+    @Override
+    public List<Style> selectStyleListByFlag(int flag) {
+        return null;
     }
 }
