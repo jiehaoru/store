@@ -10,12 +10,10 @@
     delete from stylefac
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jhr.entity.Stylefac" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into stylefac (styleID, refactoryID)
-    values (#{styleid,jdbcType=BIGINT}, #{refactoryid,jdbcType=BIGINT})
+  <insert id="insert" parameterType="com.jhr.entity.Stylefac" useGeneratedKeys="true"
+          keyProperty="id">
+    insert into stylefac (id,styleID, refactoryID)
+    values (#{id,jdbcType=BIGINT},#{styleid,jdbcType=BIGINT}, #{refactoryid,jdbcType=BIGINT})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.jhr.entity.Stylefac" >
     update stylefac
@@ -32,4 +30,23 @@
     select id, styleID, refactoryID
     from stylefac
   </select>
+
+  <!--动态删除-->
+  <delete id="deleteBy" parameterType="com.jhr.entity.Stylefac" >
+    delete from stylefac
+    <where>
+
+      <if test="id != null">
+        AND  id = #{id,jdbcType=BIGINT} /* id */
+      </if>
+      <if test="styleid != null">
+        AND  styleID=#{styleid,jdbcType=BIGINT}/* id */
+      </if>
+      <if test="refactoryid != null">
+        AND  refactoryID =#{refactoryid,jdbcType=BIGINT}/* id */
+      </if>
+
+    </where>
+
+  </delete>
 </mapper>

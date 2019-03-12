@@ -1,7 +1,9 @@
 package com.jhr.serviceImpl;
 
+import com.jhr.dao.StylestoMapper;
 import com.jhr.entity.Stylesto;
 import com.jhr.service.StylestoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,13 +16,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class StylestoServiceImpl implements StylestoService {
+    @Autowired
+    private StylestoMapper stylestoMapper;
     @Override
     public int insert(Stylesto stylesto) {
-        return 0;
+        return stylestoMapper.insert(stylesto);
     }
 
     @Override
     public int deleteBy(Stylesto stylesto) {
-        return 0;
+        return stylestoMapper.deleteBy(stylesto);
     }
 }

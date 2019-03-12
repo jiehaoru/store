@@ -25,17 +25,16 @@
     delete from style
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jhr.entity.Style" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into style (styleID, styleName, colour, 
+  <insert id="insert" parameterType="com.jhr.entity.Style" useGeneratedKeys="true"
+          keyProperty="id">
+
+    insert into style (id,styleID, styleName, colour,
       `standard`, `size`, material, 
       numstr, price, picture, 
       flag, `operator`, createtime, 
       filed1, filed2, filed3, 
       filed4, filed5)
-    values (#{styleid,jdbcType=BIGINT}, #{stylename,jdbcType=VARCHAR}, #{colour,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT},#{styleid,jdbcType=BIGINT}, #{stylename,jdbcType=VARCHAR}, #{colour,jdbcType=VARCHAR},
       #{standard,jdbcType=VARCHAR}, #{size,jdbcType=VARCHAR}, #{material,jdbcType=VARCHAR}, 
       #{numstr,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE}, #{picture,jdbcType=VARCHAR}, 
       #{flag,jdbcType=INTEGER}, #{operator,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
@@ -73,5 +72,94 @@
     select id, styleID, styleName, colour, `standard`, `size`, material, numstr, price, 
     picture, flag, `operator`, createtime, filed1, filed2, filed3, filed4, filed5
     from style
+  </select>
+
+
+  <select id="selectStyleBy"
+          parameterType="com.jhr.entity.Style"
+          resultType="com.jhr.entity.Style">
+
+    SELECT id, styleID, styleName, colour, `standard`, `size`, material, numstr, price,
+    picture, flag, `operator`, createtime, filed1, filed2, filed3, filed4, filed5
+    FROM   style
+    <where>
+
+      <if test="id != null">
+        AND  id = #{id,jdbcType=BIGINT} /* id */
+      </if>
+
+      <if test="styleid != null">
+        AND styleID = #{styleid,jdbcType=BIGINT} /* 款号 */
+      </if>
+
+      <if test="stylename != null and stylename != ''">
+        AND  styleName = #{stylename,jdbcType=VARCHAR} /* 款式名 */
+      </if>
+
+      <if test="colour != null and colour != ''">
+        AND  colour = #{colour,jdbcType=VARCHAR} /* 颜色 */
+      </if>
+      <if test="standard != null and standard != ''">
+        AND  standard` = #{standard,jdbcType=VARCHAR} /* 规格 */
+      </if>
+      <if test="size != null and size != ''">
+        AND size` = #{size,jdbcType=VARCHAR} /* 号型 */
+      </if>
+      <if test="material != null and material != ''">
+        AND  material = #{material,jdbcType=VARCHAR} /* 面料 */
+      </if>
+
+      <if test="numstr != null and numstr != ''">
+        AND  numstr = #{numstr,jdbcType=VARCHAR} /* 自定义编号 */
+
+      </if>
+
+      <if test="price != null">
+        AND   price = #{price,jdbcType=DOUBLE} /* 零售价格 */
+      </if>
+
+      <if test="picture != null and picture != ''">
+        AND  picture = #{picture,jdbcType=VARCHAR} /*图片 */
+      </if>
+
+      <if test="flag != null">
+        AND  flag = #{flag,jdbcType=INTEGER} /* 标记 */
+      </if>
+
+      <if test="operator != null and operator != ''">
+        AND  operator = #{operator,jdbcType=VARCHAR} /* 操作人 */
+      </if>
+
+      <if test="createtime != null">
+        AND  createtime = #{createtime,jdbcType=TIMESTAMP} /* 创建日期 */
+      </if>
+
+      <if test="filed1 != null and filed1 != ''">
+        AND  filed1 = #{filed1,jdbcType=VARCHAR} /* filed1 */
+      </if>
+
+      <if test="filed2 != null and filed2 != ''">
+        AND  filed2 = #{filed2,jdbcType=VARCHAR} /* filed2 */
+      </if>
+
+      <if test="filed3 != null and filed3 != ''">
+        AND  filed3 = #{filed3,jdbcType=VARCHAR} /* filed3 */
+      </if>
+
+
+      <if test="filed4 != null and filed4 != ''">
+        AND  filed4 = #{filed4,jdbcType=VARCHAR} /* filed4 */
+      </if>
+      <if test="filed5 != null and filed5 != ''">
+        AND  filed5 = #{filed5,jdbcType=VARCHAR} /* filed5 */
+      </if>
+
+    </where>
+
+    <!-- 排序信息 -->
+    <!--<if test="orderBy != null and orderBy != ''">-->
+    ORDER BY  createtime DESC /* 排序 */
+    <!--</if>-->
+
   </select>
 </mapper>

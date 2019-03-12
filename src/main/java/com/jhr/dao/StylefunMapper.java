@@ -15,4 +15,6 @@ public interface StylefunMapper {
     List<Stylefun> selectAll();
 
     int updateByPrimaryKey(Stylefun record);
+
+    int deleteBy(Stylefun stylefun);
 }

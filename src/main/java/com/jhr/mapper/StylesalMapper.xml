@@ -10,12 +10,11 @@
     delete from stylesal
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jhr.entity.Stylesal" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into stylesal (styleID, saleID)
-    values (#{styleid,jdbcType=BIGINT}, #{saleid,jdbcType=BIGINT})
+  <insert id="insert" parameterType="com.jhr.entity.Stylesal" useGeneratedKeys="true"
+          keyProperty="id">
+
+    insert into stylesal (id,styleID, saleID)
+    values (#{id,jdbcType=BIGINT},#{styleid,jdbcType=BIGINT}, #{saleid,jdbcType=BIGINT})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.jhr.entity.Stylesal" >
     update stylesal
@@ -32,4 +31,22 @@
     select id, styleID, saleID
     from stylesal
   </select>
+  <!--动态删除-->
+  <delete id="deleteBy" parameterType="com.jhr.entity.Stylesal" >
+    delete from stylesal
+    <where>
+
+      <if test="id != null">
+        AND  id = #{id,jdbcType=BIGINT} /* id */
+      </if>
+      <if test="styleid != null">
+        AND  styleID=#{styleid,jdbcType=BIGINT}/* id */
+      </if>
+      <if test="saleid != null">
+        AND  saleID =#{saleid,jdbcType=BIGINT}/* id */
+      </if>
+
+    </where>
+
+  </delete>
 </mapper>

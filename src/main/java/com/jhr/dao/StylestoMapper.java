@@ -15,4 +15,6 @@ public interface StylestoMapper {
     List<Stylesto> selectAll();
 
     int updateByPrimaryKey(Stylesto record);
+
+    int deleteBy(Stylesto stylesto);
 }

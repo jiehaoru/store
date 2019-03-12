@@ -15,4 +15,6 @@ public interface RefactoryMapper {
     List<Refactory> selectAll();
 
     int updateByPrimaryKey(Refactory record);
+
+    List<Refactory> selectRefactoryListBy(Refactory refactory);
 }

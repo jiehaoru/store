@@ -19,15 +19,14 @@
     delete from stock
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jhr.entity.Stock" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into stock (numstr, innumber, nownumber, 
+  <insert id="insert" parameterType="com.jhr.entity.Stock" useGeneratedKeys="true"
+          keyProperty="id">
+
+    insert into stock (id,numstr, innumber, nownumber,
       flag, `operator`, createtime, 
       filed1, filed2, filed3, 
       filed4, filed5)
-    values (#{numstr,jdbcType=VARCHAR}, #{innumber,jdbcType=BIGINT}, #{nownumber,jdbcType=BIGINT}, 
+    values (#{id,jdbcType=BIGINT},#{numstr,jdbcType=VARCHAR}, #{innumber,jdbcType=BIGINT}, #{nownumber,jdbcType=BIGINT},
       #{flag,jdbcType=INTEGER}, #{operator,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
       #{filed1,jdbcType=VARCHAR}, #{filed2,jdbcType=VARCHAR}, #{filed3,jdbcType=VARCHAR}, 
       #{filed4,jdbcType=VARCHAR}, #{filed5,jdbcType=VARCHAR})
@@ -57,5 +56,71 @@
     select id, numstr, innumber, nownumber, flag, `operator`, createtime, filed1, filed2, 
     filed3, filed4, filed5
     from stock
+  </select>
+
+  <select id="selectStockListBy"
+          parameterType="com.jhr.entity.Stock"
+          resultType="com.jhr.entity.Stock">
+
+    SELECT   id, numstr, innumber, nownumber, flag, `operator`, createtime, filed1, filed2,
+    filed3, filed4, filed5
+    FROM   stock
+    <where>
+
+      <if test="id != null">
+        AND  id = #{id,jdbcType=BIGINT} /* id */
+      </if>
+
+      <if test="numstr != null and numstr != ''">
+        AND  numstr = #{numstr,jdbcType=VARCHAR} /* 自定义编号 */
+      </if>
+
+      <if test="innumber != null">
+        AND  innumber = #{innumber,jdbcType=BIGINT}/* 入库数量 */
+      </if>
+
+      <if test="nownumber != null">
+        AND  nownumber = #{nownumber,jdbcType=BIGINT} /* 现库存数量 */
+      </if>
+
+      <if test="flag != null">
+        AND  flag = #{flag,jdbcType=INTEGER} /* 标记 */
+      </if>
+
+      <if test="operator != null and operator != ''">
+        AND  operator = #{operator,jdbcType=VARCHAR} /* 操作人 */
+      </if>
+
+      <if test="createtime != null">
+        AND  createtime = #{createtime,jdbcType=TIMESTAMP} /* 创建日期 */
+      </if>
+
+      <if test="filed1 != null and filed1 != ''">
+        AND  filed1 = #{filed1,jdbcType=VARCHAR} /* filed1 */
+      </if>
+
+      <if test="filed2 != null and filed2 != ''">
+        AND  filed2 = #{filed2,jdbcType=VARCHAR} /* filed2 */
+      </if>
+
+      <if test="filed3 != null and filed3 != ''">
+        AND  filed3 = #{filed3,jdbcType=VARCHAR} /* filed3 */
+      </if>
+
+
+      <if test="filed4 != null and filed4 != ''">
+        AND  filed4 = #{filed4,jdbcType=VARCHAR} /* filed4 */
+      </if>
+      <if test="filed5 != null and filed5 != ''">
+        AND  filed5 = #{filed5,jdbcType=VARCHAR} /* filed5 */
+      </if>
+
+    </where>
+
+    <!-- 排序信息 -->
+    <!--<if test="orderBy != null and orderBy != ''">-->
+    ORDER BY  createtime DESC /* 排序 */
+    <!--</if>-->
+
   </select>
 </mapper>

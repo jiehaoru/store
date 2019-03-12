@@ -15,4 +15,6 @@ public interface StylefacMapper {
     List<Stylefac> selectAll();
 
     int updateByPrimaryKey(Stylefac record);
+
+    int deleteBy(Stylefac stylefac);
 }

@@ -15,4 +15,6 @@ public interface StockMapper {
     List<Stock> selectAll();
 
     int updateByPrimaryKey(Stock record);
+
+    List<Stock> selectStockListBy(Stock stock);
 }

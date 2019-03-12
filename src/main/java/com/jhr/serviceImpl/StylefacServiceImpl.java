@@ -1,7 +1,9 @@
 package com.jhr.serviceImpl;
 
+import com.jhr.dao.StylefacMapper;
 import com.jhr.entity.Stylefac;
 import com.jhr.service.StylefacService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,13 +17,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class StylefacServiceImpl implements StylefacService {
+    @Autowired
+    private StylefacMapper stylefacMapper;
     @Override
     public int insert(Stylefac stylefac) {
-        return 0;
+        return stylefacMapper.insert(stylefac);
     }
 
     @Override
     public int deleteBy(Stylefac stylefac) {
-        return 0;
+        return stylefacMapper.deleteBy(stylefac);
     }
 }

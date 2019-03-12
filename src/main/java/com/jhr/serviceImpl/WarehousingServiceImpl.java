@@ -1,7 +1,9 @@
 package com.jhr.serviceImpl;
 
+import com.jhr.dao.WarehousingMapper;
 import com.jhr.entity.Warehousing;
 import com.jhr.service.WarehousingService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,28 +18,35 @@ import java.util.List;
  */
 @Service
 public class WarehousingServiceImpl implements WarehousingService {
+    @Autowired
+    private WarehousingMapper warehousingMapper;
     @Override
     public int insertWarehousing(Warehousing warehousing) {
-        return 0;
+        return warehousingMapper.insert(warehousing);
     }
 
     @Override
     public List<Warehousing> selectWarehousingListBy(Warehousing warehousing) {
-        return null;
+        return warehousingMapper.selectWarehousingListBy(warehousing);
     }
 
     @Override
     public Warehousing selectWarehousingListByPrimaryKey(Warehousing req) {
-        return null;
+        List<Warehousing> warehousings = warehousingMapper.selectWarehousingListBy(req);
+        Warehousing warehousing=null;
+        if (warehousings != null) {
+            warehousing=warehousings.get(0);
+        }
+        return warehousing;
     }
 
     @Override
     public int updateByPrimaryKey(Warehousing warehousing) {
-        return 0;
+        return warehousingMapper.updateByPrimaryKey(warehousing);
     }
 
     @Override
     public int deleteByPrimaryKey(Long key) {
-        return 0;
+        return warehousingMapper.deleteByPrimaryKey(key);
     }
 }

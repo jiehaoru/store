@@ -1,7 +1,9 @@
 package com.jhr.serviceImpl;
 
+import com.jhr.dao.StylefunMapper;
 import com.jhr.entity.Stylefun;
 import com.jhr.service.StylefunService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,13 +16,16 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class StylefunServiceImpl implements StylefunService {
+    @Autowired
+    private StylefunMapper stylefunMapper;
+
     @Override
     public int insert(Stylefun stylefun) {
-        return 0;
+        return stylefunMapper.insert(stylefun);
     }
 
     @Override
     public int deleteBy(Stylefun stylefun) {
-        return 0;
+        return stylefunMapper.deleteBy(stylefun);
     }
 }

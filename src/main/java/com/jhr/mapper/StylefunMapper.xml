@@ -10,12 +10,11 @@
     delete from stylefun
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jhr.entity.Stylefun" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into stylefun (styleID, refundsID)
-    values (#{styleid,jdbcType=BIGINT}, #{refundsid,jdbcType=BIGINT})
+  <insert id="insert" parameterType="com.jhr.entity.Stylefun" useGeneratedKeys="true"
+          keyProperty="id">
+
+    insert into stylefun (id,styleID, refundsID)
+    values (#{id,jdbcType=BIGINT},#{styleid,jdbcType=BIGINT}, #{refundsid,jdbcType=BIGINT})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.jhr.entity.Stylefun" >
     update stylefun
@@ -32,4 +31,23 @@
     select id, styleID, refundsID
     from stylefun
   </select>
+
+  <!--动态删除-->
+  <delete id="deleteBy" parameterType="com.jhr.entity.Stylefun" >
+    delete from stylefun
+    <where>
+
+      <if test="id != null">
+        AND  id = #{id,jdbcType=BIGINT} /* id */
+      </if>
+      <if test="styleid != null">
+        AND  styleID=#{styleid,jdbcType=BIGINT}/* id */
+      </if>
+      <if test="refundsid != null">
+        AND  refundsID =#{refundsid,jdbcType=BIGINT}/* id */
+      </if>
+
+    </where>
+
+  </delete>
 </mapper>
