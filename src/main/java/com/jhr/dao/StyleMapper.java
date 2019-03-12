@@ -15,4 +15,6 @@ public interface StyleMapper {
     List<Style> selectAll();
 
     int updateByPrimaryKey(Style record);
+
+    List<Style> selectStyleBy(Style style);
 }

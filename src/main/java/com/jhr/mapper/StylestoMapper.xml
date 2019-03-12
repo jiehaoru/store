@@ -10,12 +10,10 @@
     delete from stylesto
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jhr.entity.Stylesto" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into stylesto (styleID, stockID)
-    values (#{styleid,jdbcType=BIGINT}, #{stockid,jdbcType=BIGINT})
+  <insert id="insert" parameterType="com.jhr.entity.Stylesto"  useGeneratedKeys="true"
+          keyProperty="id">
+    insert into stylesto (id,styleID, stockID)
+    values (#{id,jdbcType=BIGINT},#{styleid,jdbcType=BIGINT}, #{stockid,jdbcType=BIGINT})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.jhr.entity.Stylesto" >
     update stylesto
@@ -32,4 +30,23 @@
     select id, styleID, stockID
     from stylesto
   </select>
+
+  <!--动态删除-->
+  <delete id="deleteBy" parameterType="com.jhr.entity.Stylesto" >
+    delete from stylesto
+    <where>
+
+      <if test="id != null">
+        AND  id = #{id,jdbcType=BIGINT} /* id */
+      </if>
+      <if test="styleid != null">
+        AND  styleID=#{styleid,jdbcType=BIGINT}/* id */
+      </if>
+      <if test="stockid != null">
+        AND  stockID=#{stockid,jdbcType=BIGINT}/* id */
+      </if>
+
+    </where>
+
+  </delete>
 </mapper>

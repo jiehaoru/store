@@ -1,8 +1,10 @@
 package com.jhr.serviceImpl;
 
+import com.jhr.dao.StylesalMapper;
 import com.jhr.entity.Stylesal;
 import com.jhr.service.StylesalService;
 import com.jhr.service.StylewarService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,13 +18,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class StylesalServiceImpl implements StylesalService {
+    @Autowired
+    private StylesalMapper stylesalMapper;
     @Override
     public int insert(Stylesal stylesal) {
-        return 0;
+        return stylesalMapper.insert(stylesal);
     }
 
     @Override
     public int deleteBy(Stylesal stylesal) {
-        return 0;
+        return stylesalMapper.deleteBy(stylesal);
     }
 }

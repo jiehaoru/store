@@ -10,12 +10,11 @@
     delete from stylewar
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jhr.entity.Stylewar" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into stylewar (styleID, warehousingID)
-    values (#{styleid,jdbcType=BIGINT}, #{warehousingid,jdbcType=BIGINT})
+  <insert id="insert" parameterType="com.jhr.entity.Stylewar"  useGeneratedKeys="true"
+          keyProperty="id">
+
+    insert into stylewar (id,styleID, warehousingID)
+    values (#{id,jdbcType=BIGINT},#{styleid,jdbcType=BIGINT}, #{warehousingid,jdbcType=BIGINT})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.jhr.entity.Stylewar" >
     update stylewar
@@ -32,4 +31,23 @@
     select id, styleID, warehousingID
     from stylewar
   </select>
+
+  <!--动态删除-->
+  <delete id="deleteBy" parameterType="com.jhr.entity.Stylewar" >
+    delete from stylewar
+    <where>
+
+      <if test="id != null">
+        AND  id = #{id,jdbcType=BIGINT} /* id */
+      </if>
+      <if test="styleid != null">
+        AND  styleID=#{styleid,jdbcType=BIGINT}/* id */
+      </if>
+      <if test="warehousingid != null">
+        AND  warehousingID =#{warehousingid,jdbcType=BIGINT}/* id */
+      </if>
+
+    </where>
+
+  </delete>
 </mapper>

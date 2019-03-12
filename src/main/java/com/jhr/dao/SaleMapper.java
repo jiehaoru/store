@@ -15,4 +15,6 @@ public interface SaleMapper {
     List<Sale> selectAll();
 
     int updateByPrimaryKey(Sale record);
+
+    List<Sale> selectSaleListBy(Sale sale);
 }

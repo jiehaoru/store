@@ -15,4 +15,6 @@ public interface WarehousingMapper {
     List<Warehousing> selectAll();
 
     int updateByPrimaryKey(Warehousing record);
+
+    List<Warehousing> selectWarehousingListBy(Warehousing warehousing);
 }

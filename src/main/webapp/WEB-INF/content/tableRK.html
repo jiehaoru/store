@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title> 入库页面</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+    <!-- jqgrid-->
+    <link href="css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+
+    <style>
+        /* Additional style to fix warning dialog position */
+
+        #alertmod_table_list_2 {
+            top: 900px !important;
+        }
+    </style>
+
+</head>
+
+<body class="gray-bg">
+	
+<div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+				<div class="ibox float-e-margins">
+<!--
+					新增模块	
+					<div class="col-md-12">
+    					<div class="form-group">
+       						 <h5>款名查询框:</h5>
+							<form action="" method="post">
+							<input type="text" name="" placeholder="请输款名" />
+        					<button class="btn btn-primary" type="submit">查询</button>
+							</form>
+   						 </div>
+					</div>
+-->
+					<div class="ibox-content">
+						<form method="post" class="form-horizontal" action="">
+							<div class="form-group">
+                                <label class="col-sm-2 control-label">款名查询框:</label>
+
+                                <div class="col-sm-10">
+                                    <div class="input-group">
+                                        <input type="text" placeholder="请输款名" class="form-control"> <span class="input-group-btn">
+										<button type="submit" class="btn btn-primary">搜索
+                                        </button> </span>
+                                    </div>
+                                </div>
+                            </div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+    <div class="wrapper wrapper-content  animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox ">
+                    <div class="ibox-title">
+                        <h5>入库信息浏览</h5>
+                    </div>
+                    <div class="ibox-content">
+                       
+<!--                        <h4>基本示例</h4>-->
+						<!--		模糊查询的模块	-->
+					<div class="col-md-12">
+    					<div class="form-group">
+        					<div class="col-sm-12 col-sm-offset-3">
+           						<button type="button" class="btn btn-w-m btn-success" onclick="location='addWarehousing.html'">新增</button>
+       						 </div>
+    					</div>
+					</div>
+						<!-- 表格模块 -->
+                        <div class="jqGrid_wrapper">
+                            <table id="table_list_1"></table>
+                            <div id="pager_list_1"></div>
+                        </div>
+                        <p>&nbsp;</p>
+<!--
+                        <h4 class="m-t">高级用法</h4>
+
+
+                        <div class="jqGrid_wrapper">
+                            <table id="table_list_2"></table>
+                            <div id="pager_list_2"></div>
+                        </div>
+-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+
+
+    <!-- Peity -->
+    <script src="js/plugins/peity/jquery.peity.min.js"></script>
+
+    <!-- jqGrid -->
+    <script src="js/plugins/jqgrid/i18n/grid.locale-cn.js?0820"></script>
+    <script src="js/plugins/jqgrid/jquery.jqGrid.min.js?0820"></script>
+
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+
+    <!-- Page-Level Scripts -->
+    <script>
+        $(document).ready(function () {
+
+            $.jgrid.defaults.styleUI = 'Bootstrap';
+            // Examle data for jqGrid
+            var mydata = [
+                {
+                    id: "1",
+                    numstr: "3120604841#999",
+                    number: "10",
+                    radeprice: "999.0",
+					intotime:"2007-09-01",
+                    operator: "root",
+					createtime: "2007-09-01",
+					bj: "编辑",
+					sc: "删除"
+                }
+             
+            ];
+
+            // Configuration for jqGrid Example 1
+            $("#table_list_1").jqGrid({
+                data: mydata,
+                datatype: "local",
+                height: 250,
+                autowidth: true,
+                shrinkToFit: true,
+                rowNum: 10,
+                rowList: [10, 20, 30],
+                colNames: ['序号', '款式内部编号', '数量', '出厂价', '入库时间', '操作人', '创建时间','',''],
+                colModel: [
+                    {
+                        name: 'id',
+                        index: 'id',
+                        width: 60,
+						align: "center",
+                        sorttype: "int"
+                    },
+                    {
+                        name: 'numstr',
+                        index: 'numstr',
+						formatter:'showlink', 
+						formatoptions:{baseLinkUrl:'', addParam: '&action=edit'},
+                        width: 60,
+						align: "center",
+                    },
+                    {
+                       name: 'number',
+                        index: 'number',
+                        width: 40,
+						align: "center",
+                        sorttype: "int"
+                      
+                    },
+                    {
+                        name: 'radeprice',
+                        index: 'radeprice',
+                        width: 80,
+                       align: "center",
+                        sorttype: "float",
+                        formatter: "number"
+                    },
+                    {
+                        name: 'intotime',
+                        index: 'intotime',
+                        width: 80,
+                        align: "center",
+                        sorttype: "date",
+                        formatter: "date"
+                    },
+                    {
+                        name: 'operator',
+                        index: 'operator',
+                        width: 80,
+                        align: "center"
+                        
+                    },
+                    {
+                        name: 'createtime',
+                        index: 'createtime',
+                        width: 80,
+                        align: "center",
+                        sorttype: "date",
+                        formatter: "date"
+                    },
+					{
+                        name: 'bj',
+                        formatter:'showlink', 
+						formatoptions:{baseLinkUrl:'updateWarehousing.html', addParam: '&action=edit'},
+						align: "center",
+                        width: 15
+                        
+                    },
+					{
+                        name: 'sc',
+                        formatter:'showlink', 
+						formatoptions:{baseLinkUrl:'', addParam: '&action=edit'},
+						align: "center",
+                        width: 15
+                        
+                    }
+                ],
+                pager: "#pager_list_1",
+                viewrecords: true,
+                caption: "数据",
+                hidegrid: false
+            });
+
+       
+
+            // Add responsive to jqGrid
+            $(window).bind('resize', function () {
+                var width = $('.jqGrid_wrapper').width();
+                $('#table_list_1').setGridWidth(width);
+            });
+        });
+    </script>
+
+    
+    
+
+</body>
+
+</html>

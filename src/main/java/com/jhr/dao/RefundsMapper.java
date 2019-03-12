@@ -15,4 +15,6 @@ public interface RefundsMapper {
     List<Refunds> selectAll();
 
     int updateByPrimaryKey(Refunds record);
+
+    List<Refunds> selectRefundsListBy(Refunds refunds);
 }

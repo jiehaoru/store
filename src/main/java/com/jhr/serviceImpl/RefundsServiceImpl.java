@@ -1,7 +1,9 @@
 package com.jhr.serviceImpl;
 
+import com.jhr.dao.RefundsMapper;
 import com.jhr.entity.Refunds;
 import com.jhr.service.RefundsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,23 +18,26 @@ import java.util.List;
  */
 @Service
 public class RefundsServiceImpl implements RefundsService {
+    @Autowired
+    private RefundsMapper refundsMapper;
+
     @Override
     public int insertRefunds(Refunds refunds) {
-        return 0;
+        return refundsMapper.insert(refunds);
     }
 
     @Override
     public List<Refunds> selectRefundsListBy(Refunds refunds) {
-        return null;
+        return refundsMapper.selectRefundsListBy(refunds);
     }
 
     @Override
     public int updateByPrimaryKey(Refunds refunds) {
-        return 0;
+        return refundsMapper.updateByPrimaryKey(refunds);
     }
 
     @Override
     public int deleteByPrimaryKey(Long key) {
-        return 0;
+        return refundsMapper.deleteByPrimaryKey(key);
     }
 }

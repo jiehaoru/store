@@ -1,7 +1,9 @@
 package com.jhr.serviceImpl;
 
+import com.jhr.dao.SaleMapper;
 import com.jhr.entity.Sale;
 import com.jhr.service.SaleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,23 +18,25 @@ import java.util.List;
  */
 @Service
 public class SaleServiceImpl implements SaleService {
+    @Autowired
+    private SaleMapper saleMapper;
     @Override
     public List<Sale> selectSaleListBy(Sale sale) {
-        return null;
+        return saleMapper.selectSaleListBy(sale);
     }
 
     @Override
     public int updateByPrimaryKey(Sale sale) {
-        return 0;
+        return saleMapper.updateByPrimaryKey(sale);
     }
 
     @Override
     public int deleteByPrimaryKey(Long key) {
-        return 0;
+        return saleMapper.deleteByPrimaryKey(key);
     }
 
     @Override
     public int insertSale(Sale sale) {
-        return 0;
+        return saleMapper.insert(sale);
     }
 }

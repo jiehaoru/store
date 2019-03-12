@@ -1,7 +1,9 @@
 package com.jhr.serviceImpl;
 
+import com.jhr.dao.RefactoryMapper;
 import com.jhr.entity.Refactory;
 import com.jhr.service.RefactoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,28 +18,32 @@ import java.util.List;
  */
 @Service
 public class RefactoryServiceImpl implements RefactoryService {
+    @Autowired
+    private RefactoryMapper refactoryMapper;
+
     @Override
     public int insertRefactory(Refactory refactory) {
-        return 0;
+        return refactoryMapper.insert(refactory);
     }
 
     @Override
     public List<Refactory> selectRefactoryListBy(Refactory refactory) {
-        return null;
+        return refactoryMapper.selectRefactoryListBy(refactory);
     }
 
     @Override
     public Refactory selectRefactoryListByPrimaryKey(Refactory req) {
-        return null;
+
+        return refactoryMapper.selectByPrimaryKey(req.getId());
     }
 
     @Override
     public int updateByPrimaryKey(Refactory refactory) {
-        return 0;
+        return refactoryMapper.updateByPrimaryKey(refactory);
     }
 
     @Override
     public int deleteByPrimaryKey(Long key) {
-        return 0;
+        return refactoryMapper.deleteByPrimaryKey(key);
     }
 }

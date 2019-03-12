@@ -37,32 +37,35 @@ public class StyleServiceImpl implements StyleService {
 
     @Override
     public List<Style> selectStyleList() {
-        return null;
+        return styleMapper.selectAll();
     }
 
     @Override
     public Style selectStyleByPrimaryKey(Long id) {
-        return null;
+        return styleMapper.selectByPrimaryKey(id);
     }
 
     @Override
     public List<Style> selectStyleBy(Style style) {
-        return null;
+        return styleMapper.selectStyleBy(style);
     }
 
 
     @Override
     public int updateByPrimaryKey(Style style) {
-        return 0;
+        return styleMapper.updateByPrimaryKey(style);
     }
 
     @Override
     public int deleteByPrimaryKey(Long id) {
-        return 0;
+        return styleMapper.deleteByPrimaryKey(id);
     }
 
+    //未用
     @Override
     public List<Style> selectStyleListByFlag(int flag) {
         return null;
     }
+
+
 }

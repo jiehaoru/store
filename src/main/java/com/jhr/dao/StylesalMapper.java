@@ -15,4 +15,6 @@ public interface StylesalMapper {
     List<Stylesal> selectAll();
 
     int updateByPrimaryKey(Stylesal record);
+
+    int deleteBy(Stylesal stylesal);
 }

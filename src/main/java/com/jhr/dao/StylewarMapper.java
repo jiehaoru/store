@@ -15,4 +15,6 @@ public interface StylewarMapper {
     List<Stylewar> selectAll();
 
     int updateByPrimaryKey(Stylewar record);
+
+    int deleteBy(Stylewar stylewar);
 }
