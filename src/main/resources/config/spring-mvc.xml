@@ -22,6 +22,7 @@
 
     <!-- 配置适配器和映射器 -->
     <mvc:annotation-driven></mvc:annotation-driven>
+    <!--<mvc:resources mapping="/**" location="/content"/>-->
 
     <!-- 配置视图解析器 -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/cont" p:suffix=".jsp"></bean>
@@ -43,9 +44,12 @@
 
 
 
-    <!-- 对静态资源放行 方案一
-    <mvc:resources location="/js/" mapping="/js/**"/>
-    <mvc:resources location="/image/" mapping="/image/**"/>-->
+    <!-- 对静态资源放行 方案一-->
+    <mvc:resources location="/content/js/" mapping="/js/**"/>
+    <!--<mvc:resources location="/content/image/" mapping="/image/**"/>-->
+    <mvc:resources location="/content/css/" mapping="/css/**"/>
+    <mvc:resources location="/content/fonts/" mapping="/fonts/**"/>
+    <mvc:resources location="/content/img/" mapping="/img/**"/>
 
     <!-- 方案二 -->
     <mvc:default-servlet-handler/>
