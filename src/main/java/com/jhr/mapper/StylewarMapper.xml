@@ -36,15 +36,14 @@
   <delete id="deleteBy" parameterType="com.jhr.entity.Stylewar" >
     delete from stylewar
     <where>
-
       <if test="id != null">
-        AND  id = #{id,jdbcType=BIGINT} /* id */
+          id = #{id,jdbcType=BIGINT}
       </if>
       <if test="styleid != null">
-        AND  styleID=#{styleid,jdbcType=BIGINT}/* id */
+          styleID=#{styleid,jdbcType=BIGINT}
       </if>
       <if test="warehousingid != null">
-        AND  warehousingID =#{warehousingid,jdbcType=BIGINT}/* id */
+          warehousingID =#{warehousingid,jdbcType=BIGINT}
       </if>
 
     </where>

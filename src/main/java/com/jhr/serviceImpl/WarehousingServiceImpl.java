@@ -34,7 +34,7 @@ public class WarehousingServiceImpl implements WarehousingService {
     public Warehousing selectWarehousingListByPrimaryKey(Warehousing req) {
         List<Warehousing> warehousings = warehousingMapper.selectWarehousingListBy(req);
         Warehousing warehousing=null;
-        if (warehousings != null) {
+        if (warehousings.size()>0) {
             warehousing=warehousings.get(0);
         }
         return warehousing;
