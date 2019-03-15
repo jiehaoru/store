@@ -137,7 +137,7 @@ public class StyleController extends BaseController {
         if(null==style.getId()){
             LOGGER.error("StyleServiceImpl========>selectStyleByPrimaryKey失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.RSP_CODE_FAILUR);
-            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",selectStyleByPrimaryKey失败,id为空");
             return baseRsp;
         }
 
@@ -176,6 +176,8 @@ public class StyleController extends BaseController {
         try {
             style.setFlag(1);//有效
             list = styleService.selectStyleBy(style);
+            baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
             baseRsp.setData(list);
         } catch (Exception e) {
             LOGGER.error("StyleServiceImpl========>insertStyle失败", e);
@@ -207,12 +209,12 @@ public class StyleController extends BaseController {
         }
         try {
             List<Style> styles = styleService.selectStyleBy(style);//返回单个
-            if (null != styles && styles.size()>0) {
-                rspstyle= styles.get(0);//
-                baseRsp.setData(rspstyle);
-                baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
-                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
+            if(styles.size()>0){
+                rspstyle=styles.get(0);
             }
+            baseRsp.setData(rspstyle);
+            baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
         } catch (Exception e) {
             LOGGER.error("StyleServiceImpl========>selectStyleBynumstr失败", e);
             baseRsp.setRespCode(BaseRspConstants.RSP_CODE_FAILUR);
@@ -229,16 +231,23 @@ public class StyleController extends BaseController {
      *
      * @return
      */
-
+    @ResponseBody
     @RequestMapping(value = "/updateStyle",method = RequestMethod.POST)
     public BaseRsp updateStyle(@RequestBody Style style) {
        BaseRsp baseRsp=new BaseRsp();
+
+       if(null==style.getId()){
+           baseRsp.setRespCode(BaseRspConstants.RSP_CODE_FAILUR);
+           baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",主键id为空");
+           return baseRsp;
+       }
+
         int re;
         try {
             re = styleService.updateByPrimaryKey(style);
             if (re>0){
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
-                baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             }else {
                 baseRsp.setRespCode(BaseRspConstants.RSP_CODE_FAILUR);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",修改影响行数"+re);
@@ -258,6 +267,7 @@ public class StyleController extends BaseController {
      * @param style
      * @return
      */
+    @ResponseBody
     @RequestMapping(value = "/deleteByPrimaryKey",method = RequestMethod.POST)
     public BaseRsp deleteByPrimaryKey(@RequestBody Style style) {
         BaseRsp baseRsp=new BaseRsp();
@@ -289,7 +299,6 @@ public class StyleController extends BaseController {
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_ERROR);
             return baseRsp;
         }
-
         return baseRsp;
     }
 
