@@ -36,6 +36,7 @@
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.jhr.entity.Warehousing" >
     update warehousing
+    <!--
     set numstr = #{numstr,jdbcType=VARCHAR},
       `number` = #{number,jdbcType=BIGINT},
       intotime = #{intotime,jdbcType=TIMESTAMP},
@@ -48,6 +49,57 @@
       filed3 = #{filed3,jdbcType=VARCHAR},
       filed4 = #{filed4,jdbcType=VARCHAR},
       filed5 = #{filed5,jdbcType=VARCHAR}
+     -->
+    <set>
+
+      <if test="numstr != null and numstr != ''">
+        `numstr` = #{numstr,jdbcType=BIGINT},
+      </if>
+      <if test="number != null and number != ''">
+          `number` = #{number,jdbcType=BIGINT},
+      </if>
+
+      <if test="intotime != null">
+          intotime = #{intotime,jdbcType=TIMESTAMP},
+      </if>
+
+      <if test="radeprice != null">
+           radeprice = #{radeprice,jdbcType=DOUBLE},
+      </if>
+
+      <if test="flag != null">
+          flag = #{flag,jdbcType=INTEGER},
+      </if>
+
+      <if test="operator != null and operator != ''">
+          operator = #{operator,jdbcType=VARCHAR},
+      </if>
+
+      <if test="createtime != null">
+          createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+
+      <if test="filed1 != null and filed1 != ''">
+          filed1 = #{filed1,jdbcType=VARCHAR},
+      </if>
+
+      <if test="filed2 != null and filed2 != ''">
+          filed2 = #{filed2,jdbcType=VARCHAR},
+      </if>
+
+      <if test="filed3 != null and filed3 != ''">
+          filed3 = #{filed3,jdbcType=VARCHAR},
+      </if>
+
+
+      <if test="filed4 != null and filed4 != ''">
+          filed4 = #{filed4,jdbcType=VARCHAR},
+      </if>
+      <if test="filed5 != null and filed5 != ''">
+          filed5 = #{filed5,jdbcType=VARCHAR}
+      </if>
+
+    </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -70,13 +122,16 @@
     filed2, filed3, filed4, filed5
     FROM   warehousing
     <where>
-
+        1=1
       <if test="id != null">
         AND  id = #{id,jdbcType=BIGINT} /* id */
       </if>
 
+      <if test="numstr != null and numstr != ''">
+        AND  numstr LIKE CONCAT('%',#{numstr,jdbcType=VARCHAR},'%') /* 自定义编号 */
+      </if>
       <if test="number != null and number != ''">
-        AND  `number` = #{number,jdbcType=BIGINT}, /* 数量 */
+        AND  `number` = #{number,jdbcType=BIGINT} /* 数量 */
       </if>
 
       <if test="intotime != null">

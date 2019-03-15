@@ -43,25 +43,78 @@
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.jhr.entity.Style" >
     update style
-    set styleID = #{styleid,jdbcType=BIGINT},
-      styleName = #{stylename,jdbcType=VARCHAR},
-      colour = #{colour,jdbcType=VARCHAR},
-      `standard` = #{standard,jdbcType=VARCHAR},
-      `size` = #{size,jdbcType=VARCHAR},
-      material = #{material,jdbcType=VARCHAR},
-      numstr = #{numstr,jdbcType=VARCHAR},
-      price = #{price,jdbcType=DOUBLE},
-      picture = #{picture,jdbcType=VARCHAR},
-      flag = #{flag,jdbcType=INTEGER},
-      `operator` = #{operator,jdbcType=VARCHAR},
-      createtime = #{createtime,jdbcType=TIMESTAMP},
-      filed1 = #{filed1,jdbcType=VARCHAR},
-      filed2 = #{filed2,jdbcType=VARCHAR},
-      filed3 = #{filed3,jdbcType=VARCHAR},
-      filed4 = #{filed4,jdbcType=VARCHAR},
-      filed5 = #{filed5,jdbcType=VARCHAR}
+<trim prefix="set" suffixOverrides=",">
+    <if test="styleid != null">
+       styleID = #{styleid,jdbcType=BIGINT},
+    </if>
+
+    <if test="stylename != null and stylename != ''">
+       styleName = #{stylename,jdbcType=VARCHAR},
+    </if>
+
+    <if test="colour != null and colour != ''">
+        colour = #{colour,jdbcType=VARCHAR},
+    </if>
+    <if test="standard != null and standard != ''">
+        standard  = #{standard,jdbcType=VARCHAR},
+    </if>
+    <if test="size != null and size != ''">
+       size = #{size,jdbcType=VARCHAR},
+    </if>
+    <if test="material != null and material != ''">
+        material = #{material,jdbcType=VARCHAR},
+    </if>
+
+    <if test="numstr != null and numstr != ''">
+        numstr = #{numstr,jdbcType=VARCHAR},
+
+    </if>
+
+    <if test="price != null">
+         price = #{price,jdbcType=DOUBLE},
+    </if>
+
+    <if test="picture != null and picture != ''">
+        picture = #{picture,jdbcType=VARCHAR},
+    </if>
+
+    <if test="flag != null">
+        flag = #{flag,jdbcType=INTEGER},
+    </if>
+
+    <if test="operator != null and operator != ''">
+        operator = #{operator,jdbcType=VARCHAR},
+    </if>
+
+    <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+    </if>
+
+    <if test="filed1 != null and filed1 != ''">
+        filed1 = #{filed1,jdbcType=VARCHAR},
+    </if>
+
+    <if test="filed2 != null and filed2 != ''">
+        filed2 = #{filed2,jdbcType=VARCHAR},
+    </if>
+
+    <if test="filed3 != null and filed3 != ''">
+        filed3 = #{filed3,jdbcType=VARCHAR},
+    </if>
+
+
+    <if test="filed4 != null and filed4 != ''">
+        filed4 = #{filed4,jdbcType=VARCHAR},
+    </if>
+    <if test="filed5 != null and filed5 != ''">
+        filed5 = #{filed5,jdbcType=VARCHAR},
+    </if>
+
+</trim>
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select id, styleID, styleName, colour, `standard`, `size`, material, numstr, price, 
     picture, flag, `operator`, createtime, filed1, filed2, filed3, filed4, filed5
@@ -100,10 +153,10 @@
         AND  colour = #{colour,jdbcType=VARCHAR} /* 颜色 */
       </if>
       <if test="standard != null and standard != ''">
-        AND  standard` = #{standard,jdbcType=VARCHAR} /* 规格 */
+        AND  standard = #{standard,jdbcType=VARCHAR} /* 规格 */
       </if>
       <if test="size != null and size != ''">
-        AND size` = #{size,jdbcType=VARCHAR} /* 号型 */
+        AND size = #{size,jdbcType=VARCHAR} /* 号型 */
       </if>
       <if test="material != null and material != ''">
         AND  material = #{material,jdbcType=VARCHAR} /* 面料 */

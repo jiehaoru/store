@@ -24,6 +24,7 @@ import java.util.List;
  * @create 2019/03/10 21:24
  */
 @Controller
+@RequestMapping("/lecture")
 public class RefundsController extends BaseController {
     public static final Logger LOGGER = LoggerFactory.getLogger(RefundsController.class);
 

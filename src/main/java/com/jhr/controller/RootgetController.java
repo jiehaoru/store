@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @create 2019/03/13 19:10
  */
 @Controller
+@RequestMapping("/lecture")
 public class RootgetController extends BaseController {
 
 //    @GetMapping("/")
