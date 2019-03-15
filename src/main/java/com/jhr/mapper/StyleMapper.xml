@@ -83,7 +83,7 @@
     picture, flag, `operator`, createtime, filed1, filed2, filed3, filed4, filed5
     FROM   style
     <where>
-
+      1=1
       <if test="id != null">
         AND  id = #{id,jdbcType=BIGINT} /* id */
       </if>
@@ -93,7 +93,7 @@
       </if>
 
       <if test="stylename != null and stylename != ''">
-        AND  styleName = #{stylename,jdbcType=VARCHAR} /* 款式名 */
+        AND styleName LIKE CONCAT('%',#{stylename,jdbcType=VARCHAR},'%')/* 款式名 */
       </if>
 
       <if test="colour != null and colour != ''">
