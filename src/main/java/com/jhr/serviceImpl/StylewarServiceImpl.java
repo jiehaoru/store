@@ -22,7 +22,7 @@ public class StylewarServiceImpl implements StylewarService  {
     private StylewarMapper stylewarMapper;
     @Override
     public int insert(Stylewar stylewar) {
-        stylewar.setId(Sequence.getInstance().nextId());
+//        stylewar.setId(Sequence.getInstance().nextId());
         return stylewarMapper.insert(stylewar);
     }
 

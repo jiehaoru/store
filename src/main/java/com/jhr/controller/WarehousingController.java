@@ -216,6 +216,9 @@ public class  WarehousingController extends  BaseController {
             if (re>0){
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS+",受影响行数"+re);
+            }else {
+                baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",修改影响行数"+re);
             }
         } catch (Exception e) {
             LOGGER.error("WarehousingController========>updateWarehousing失败", e);

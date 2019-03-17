@@ -37,13 +37,13 @@
     <where>
 
       <if test="id != null">
-        AND  id = #{id,jdbcType=BIGINT} /* id */
+          id = #{id,jdbcType=BIGINT}
       </if>
       <if test="styleid != null">
-        AND  styleID=#{styleid,jdbcType=BIGINT}/* id */
+          styleID=#{styleid,jdbcType=BIGINT}
       </if>
       <if test="saleid != null">
-        AND  saleID =#{saleid,jdbcType=BIGINT}/* id */
+          saleID =#{saleid,jdbcType=BIGINT}
       </if>
 
     </where>

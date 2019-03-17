@@ -1,19 +1,22 @@
 package com.jhr.controller;
 
-import com.jhr.entity.Stock;
-import com.jhr.entity.Style;
-import com.jhr.entity.Stylesto;
+import com.jhr.entity.*;
 import com.jhr.service.StockService;
 import com.jhr.service.StyleService;
 import com.jhr.service.StylestoService;
 import com.jhr.utils.Sequence;
+import com.jhr.utils.base.BaseRsp;
+import com.jhr.utils.base.BaseRspConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -43,37 +46,59 @@ public class StockController extends BaseController {
      * @param stock
      * @return
      */
-    @RequestMapping("/insertStock")
-    public String insertStock(Stock stock){
-//        BaseRsp baseRsp=new BaseRsp();
+    @ResponseBody
+    @RequestMapping(value = "/insertStock",method = RequestMethod.POST)
+    public BaseRsp insertStock(@RequestBody Stock stock){
+        BaseRsp baseRsp=new BaseRsp();
+
         try {
+            List<Style> styles=new ArrayList<Style>();
+            //
             String ss = stock.getNumstr();
-            Style style=new Style();
-            style.setNumstr(ss);
-            List<Style> styles = styleService.selectStyleBy(style);
-            if (styles == null) { //没有这个款式
-                return "error";
+            if (null!=ss) {
+                Style style=new Style();
+                style.setNumstr(ss);
+                styles = styleService.selectStyleBy(style);
+                if (styles.size()==0) { //没有这个款式
+                    baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                    baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",没有这个款式");
+                    return baseRsp;
+                }
             }
-            // 库存表插入
+            // 入库表插入
             stock.setId(Sequence.getInstance().nextId());
             stock.setFlag(1);//1 有效
             stock.setCreatetime(new Date());
             int i = stockService.insertStock(stock);
+            int ii=0;
+            if (i>0){
 
-            //中间表插入
-            Stylesto stylesto=new Stylesto();
-            stylesto.setId(Sequence.getInstance().nextId());
-            stylesto.setStockid(stock.getId());
-            stylesto.setStyleid( styles.get(0).getId());
-            int ii=stylestoService.insert(stylesto);
+                //中间表插入
+               Stylesto stylesto=new Stylesto();
+                stylesto.setId(Sequence.getInstance().nextId());
+                stylesto.setStockid(stock.getId());
+                //有这款式
+                if(styles.size()>0){
+                    stylesto.setStyleid(styles.get(0).getId());
+                }
+                ii= stylestoService.insert(stylesto);
+
+                baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS+",影响行数"+i+","+ii);
+            }else {
+                baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",影响行数"+i+","+ii);
+            }
+
+
         }catch (Exception e){
-            LOGGER.error("StyleServiceImpl========>insertStyle失败", e);
-//            baseRsp.setRespCode(BaseRspConstants.RSP_CODE_FAILUR);
-//            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR);
-            return "error";
+            LOGGER.error("StockController========>insertStock失败", e);
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_ERROR);
+            return baseRsp;
         }
-        //跳转tableKC页面
-        return "tableKC";
+
+        return baseRsp;
     }
 
 
@@ -83,22 +108,27 @@ public class StockController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping("/selectStockListByFlag")
-    public List<Stock> selectStockListByFlag(){
-//        BaseRsp baseRsp=new BaseRsp();
-        Stock stock=new Stock();
+    @RequestMapping(value = "/selectStockListByFlag",method = RequestMethod.GET)
+    public BaseRsp< List<Stock>> selectStockListByFlag(){
+
+
+        BaseRsp< List<Stock>> baseRsp=new BaseRsp< List<Stock>>();
         List<Stock> list =null;
+        Stock stoc=new Stock();
         try {
-            stock.setFlag(1);
-            list =stockService.selectStockListBy(stock);
+            stoc.setFlag(1);
+            list =stockService.selectStockListBy(stoc);
+            baseRsp.setData(list);
+            baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
         }catch (Exception e){
-            LOGGER.error("StyleServiceImpl========>insertStyle失败", e);
-//            baseRsp.setRespCode(BaseRspConstants.RSP_CODE_FAILUR);
-//            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR);
-            return list;
+            LOGGER.error("StockController========>selectStockListByFlag失败", e);
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_ERROR);
+            return baseRsp;
         }
 
-        return list;
+        return baseRsp;
     }
 
 
@@ -108,45 +138,63 @@ public class StockController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping("/selectStockListByNumStr")
-    public List<Stock> selectStockListByNumStr(String numstr){
-//        BaseRsp baseRsp=new BaseRsp();
+    @RequestMapping(value = "/selectStockListByNumStr",method = RequestMethod.POST)
+    public BaseRsp<List<Stock>> selectStockListByNumStr(@RequestBody Stock stock ){
+        BaseRsp<List<Stock>> baseRsp=new BaseRsp<List<Stock>>();
         List<Stock> list =null;
-        Stock stock=new Stock();
+        if (null==stock.getNumstr()) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",Numstr 为空");
+            return baseRsp;
+        }
+
         try {
             stock.setFlag(1);
-            stock.setNumstr(numstr);
             list =stockService.selectStockListBy(stock);
+            baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
+            baseRsp.setData(list);
         }catch (Exception e){
-            LOGGER.error("StyleServiceImpl========>insertStyle失败", e);
-//            baseRsp.setRespCode(BaseRspConstants.RSP_CODE_FAILUR);
-//            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR);
-            return list;
+            LOGGER.error("StockController========>selectStockListByNumStr失败", e);
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_ERROR);
+            return baseRsp;
         }
 
-        return list;
+        return baseRsp;
     }
 
-    @RequestMapping("/selectStock")
-    public Stock selectStock(String id){
-        Stock stock=null;
-
-        try {
-            Stock req=new Stock();
-            if (null!=id){
-                req.setId(Long.valueOf(id));
-            }
-            List<Stock> stocks = stockService.selectStockListBy(req);
-            if (null !=stocks && stocks.size()>0) {
-                stock=stocks.get(0);
-            }
-        }catch (Exception e){
-            LOGGER.error("StyleServiceImpl========>insertStyle失败", e);
-//            baseRsp.setRespCode(BaseRspConstants.RSP_CODE_FAILUR);
-//            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR);
-            return stock;
+    /**
+     * 根据id查询
+     * @param stock
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/selectStock",method = RequestMethod.POST)
+    public BaseRsp<Stock> selectStock(@RequestBody Stock stock){
+        BaseRsp<Stock> baseRsp=new BaseRsp<>();
+        if(null==stock.getId()){
+            LOGGER.error("StockController========>selectStock失败,id为空");
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",selectStock失败,id为空");
+            return baseRsp;
         }
-        return stock;
+        try {
+            Stock rsp=new Stock();
+            List<Stock> stocks = stockService.selectStockListBy(stock);
+            if (stocks.size()>0) {
+                rsp=stocks.get(0);
+            }
+            baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
+            baseRsp.setData(rsp);
+        }catch (Exception e){
+            LOGGER.error("StockController========>selectStock失败", e);
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_ERROR);
+            return baseRsp;
+        }
+        return baseRsp;
     }
 
     /**
@@ -155,47 +203,78 @@ public class StockController extends BaseController {
      * @return
      */
 
-    @RequestMapping("/updateStock")
-    public String updateStock(Stock stock) {
-//        BaseRsp baseRsp=new BaseRsp();
+    @ResponseBody
+    @RequestMapping(value = "/updateStock",method = RequestMethod.POST)
+    public BaseRsp updateStock(@RequestBody Stock stock) {
+        BaseRsp baseRsp=new BaseRsp();
+        if (null==stock.getId()) {
+            LOGGER.error("StockController========>updateStock失败,id为空");
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",updateStock失败,id为空");
+            return baseRsp;
+        }
+
         int re;
         try {
             re = stockService.updateByPrimaryKey(stock);
+            if (re>0){
+                baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS+",受影响行数"+re);
+            }else {
+                baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",修改影响行数"+re);
+            }
         } catch (Exception e) {
-            LOGGER.error("StyleServiceImpl========>insertStyle失败", e);
-//            baseRsp.setRespCode(BaseRspConstants.RSP_CODE_FAILUR);
-//            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR);
-            return "error";
+            LOGGER.error("StockController========>updateStock失败", e);
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_ERROR);
+            return baseRsp;
         }
 
-        //跳转tableYS页面
-        return "tableKC";
+        return baseRsp;
     }
 
     /**
      * 物理删除
-     * @param key
+     * @param stock
      * @return
      */
-    @RequestMapping("/deleteStock")
-    public String deleteStock(Long key) {
-//        BaseRsp baseRsp=new BaseRsp();
-        int re;
-        try {
-            re=stockService.deleteByPrimaryKey(key);
-            //删除中间表的全部相关信息
-            Stylesto stylesto=new Stylesto();
-            stylesto.setStockid(key);
-           int re2= stylestoService.deleteBy(stylesto);
-        } catch (Exception e) {
-            LOGGER.error("StyleServiceImpl========>insertStyle失败", e);
-//            baseRsp.setRespCode(BaseRspConstants.RSP_CODE_FAILUR);
-//            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR);
-            return "error";
+    @ResponseBody
+    @RequestMapping(value = "/deleteStock",method = RequestMethod.POST)
+    public BaseRsp deleteStock(@RequestBody Stock stock) {
+        BaseRsp baseRsp=new BaseRsp();
+        if (null==stock.getId()) {
+            LOGGER.error("StockController========>deleteWarehousing失败,id为空");
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",deleteWarehousing失败,id为空");
+            return baseRsp;
         }
 
-        //跳转tableYS页面
-        return "tableKC";
+        int re;
+        int ree=0;
+        try {
+            re=stockService.deleteByPrimaryKey(stock.getId());
+            if (re>0){
+                //删除中间表的全部相关信息
+                Stylesto stylesto=new Stylesto();
+                stylesto.setStockid(stock.getId());
+                ree= stylestoService.deleteBy(stylesto);
+                baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
+                baseRsp.setRespCode(BaseRspConstants.RSP_DESC_SUCCESS+",影响行数"+re+","+ree);
+            }else {
+                baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",影响行数"+re+","+ree);
+            }
+
+
+        } catch (Exception e) {
+            LOGGER.error("StockController========>deleteStock失败", e);
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_ERROR);
+            return baseRsp;
+        }
+
+        return baseRsp;
     }
 
 }

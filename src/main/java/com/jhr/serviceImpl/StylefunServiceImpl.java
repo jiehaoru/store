@@ -26,6 +26,10 @@ public class StylefunServiceImpl implements StylefunService {
 
     @Override
     public int deleteBy(Stylefun stylefun) {
+        //防止 where 没有条件值
+        if (null==stylefun.getId()&& null==stylefun.getRefundsid()&&null==stylefun.getStyleid()){
+            return -1;
+        }
         return stylefunMapper.deleteBy(stylefun);
     }
 }

@@ -27,6 +27,10 @@ public class StylesalServiceImpl implements StylesalService {
 
     @Override
     public int deleteBy(Stylesal stylesal) {
+        //防止 where 没有条件值
+        if (null==stylesal.getId()&& null==stylesal.getSaleid()&&null==stylesal.getStyleid()){
+            return -1;
+        }
         return stylesalMapper.deleteBy(stylesal);
     }
 }
