@@ -26,6 +26,11 @@ public class StylefacServiceImpl implements StylefacService {
 
     @Override
     public int deleteBy(Stylefac stylefac) {
+
+        //防止 where 没有条件值
+        if (null==stylefac.getId()&& null==stylefac.getRefactoryid()&&null==stylefac.getStyleid()){
+            return -1;
+        }
         return stylefacMapper.deleteBy(stylefac);
     }
 }
