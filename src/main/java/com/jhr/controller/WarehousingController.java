@@ -40,6 +40,8 @@ public class  WarehousingController extends  BaseController {
     private WarehousingService warehousingService;
     @Autowired
     private StylewarService stylewarService;
+    @Autowired
+    private  StockController stockController;
 
     /**
      * 插入 入库条目
@@ -50,10 +52,12 @@ public class  WarehousingController extends  BaseController {
     @ResponseBody
     public BaseRsp insertWare(@RequestBody Warehousing warehousing){
         BaseRsp baseRsp=new BaseRsp();
+        Stock stock=new Stock();//自动插入库存表
         try {
             List<Style> styles=new ArrayList<Style>();
             //
             String ss = warehousing.getNumstr();
+
             if (null!=ss) {
                 Style style=new Style();
                 style.setNumstr(ss);
@@ -63,6 +67,10 @@ public class  WarehousingController extends  BaseController {
                     baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",没有这个款式");
                     return baseRsp;
                 }
+            }else {// 为空
+                baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",Numstr 为空");
+                return baseRsp;
             }
             // 入库表插入
             warehousing.setId(Sequence.getInstance().nextId());
@@ -84,6 +92,14 @@ public class  WarehousingController extends  BaseController {
 
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS+",影响行数"+i+","+ii);
+
+                //
+                //自动 在库存表中记录
+                stock.setNumstr(warehousing.getNumstr());
+                stock.setInnumber(warehousing.getNumber());
+                stock.setNownumber(warehousing.getNumber());
+                stockController.insertStock(stock);
+
             }else {
                 baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",影响行数"+i+","+ii);

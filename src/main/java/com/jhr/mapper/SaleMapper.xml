@@ -115,16 +115,16 @@
         AND  numstr LIKE CONCAT('%',#{numstr,jdbcType=VARCHAR},'%') /* 自定义编号 */
       </if>
 
-      <if test="refpri != null">
-        AND  retpri = #{salepri,jdbcType=DOUBLE} /* 出售价格 */
+      <if test="salepri != null">
+        AND  salepri = #{salepri,jdbcType=DOUBLE} /* 出售价格 */
       </if>
 
-      <if test="refnum != null">
-        AND  retnum = #{salenum,jdbcType=BIGINT} /* 出售数量 */
+      <if test="salenum != null">
+        AND  salenum = #{salenum,jdbcType=BIGINT} /* 出售数量 */
       </if>
 
-      <if test="refdate != null">
-        AND  retdate = #{saledate,jdbcType=TIMESTAMP} /* 出售日期 */
+      <if test="saledate != null">
+        AND  saledate = #{saledate,jdbcType=TIMESTAMP} /* 出售日期 */
       </if>
 
       <if test="flag != null">
