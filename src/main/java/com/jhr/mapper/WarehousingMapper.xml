@@ -36,20 +36,7 @@
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.jhr.entity.Warehousing" >
     update warehousing
-    <!--
-    set numstr = #{numstr,jdbcType=VARCHAR},
-      `number` = #{number,jdbcType=BIGINT},
-      intotime = #{intotime,jdbcType=TIMESTAMP},
-      radeprice = #{radeprice,jdbcType=DOUBLE},
-      flag = #{flag,jdbcType=INTEGER},
-      `operator` = #{operator,jdbcType=VARCHAR},
-      createtime = #{createtime,jdbcType=TIMESTAMP},
-      filed1 = #{filed1,jdbcType=VARCHAR},
-      filed2 = #{filed2,jdbcType=VARCHAR},
-      filed3 = #{filed3,jdbcType=VARCHAR},
-      filed4 = #{filed4,jdbcType=VARCHAR},
-      filed5 = #{filed5,jdbcType=VARCHAR}
-     -->
+
     <set>
 
       <if test="numstr != null and numstr != ''">

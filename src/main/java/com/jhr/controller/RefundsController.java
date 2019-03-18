@@ -1,9 +1,7 @@
 package com.jhr.controller;
 
 import com.jhr.entity.*;
-import com.jhr.service.RefundsService;
-import com.jhr.service.StyleService;
-import com.jhr.service.StylefunService;
+import com.jhr.service.*;
 import com.jhr.utils.Sequence;
 import com.jhr.utils.base.BaseRsp;
 import com.jhr.utils.base.BaseRspConstants;
@@ -39,6 +37,10 @@ public class RefundsController extends BaseController {
     private RefundsService refundsService;
     @Autowired
     private StylefunService stylefunService;
+    @Autowired
+    private StockService stockService;
+    @Autowired
+    private SaleService saleService;
 
     /**
      * 插入 退货条目
@@ -51,8 +53,15 @@ public class RefundsController extends BaseController {
         BaseRsp baseRsp=new BaseRsp();
         try {
             List<Style> styles=new ArrayList<Style>();
+            Stock stock=new Stock();//修改库存
+            List<Stock> stocks =new ArrayList<Stock>();
             //
             String ss = refunds.getNumstr();
+            if (ss == null) {
+                baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",自定义编号不能为空");
+                return baseRsp;
+            }
             if (null!=ss) {
                 Style style=new Style();
                 style.setNumstr(ss);
@@ -62,7 +71,41 @@ public class RefundsController extends BaseController {
                     baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",没有这个款式");
                     return baseRsp;
                 }
+                // 库存表查询
+                stock.setNumstr(refunds.getNumstr());
+                stocks = stockService.selectStockListBy(stock);
+                if (stocks.size()<=0) {
+                    baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                    baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",库存表中没有这个款式");
+                    return baseRsp;
+                }
             }
+            //退货数不为空
+            if(null==refunds.getRetnum()){
+                baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",退货数量为空");
+                return baseRsp;
+            }
+            //退货数<=出售数
+            Sale sale=new Sale();
+            sale.setNumstr(refunds.getNumstr());
+            sale.setFlag(1);
+            List<Sale> sales = saleService.selectSaleListBy(sale);
+            if(sales.size()==0){
+                baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",出售表中未有该款信息");
+                return baseRsp;
+            }
+            int num=0;
+            for (int i = 0; i <sales.size() ; i++) {
+                    num+=sales.get(i).getSalenum();
+            }
+            if(refunds.getRetnum()>num){
+                baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",退货数大于售出总数");
+                return baseRsp;
+            }
+
             // 返厂表插入
             refunds.setId(Sequence.getInstance().nextId());
             refunds.setFlag(1);//1 有效
@@ -83,6 +126,11 @@ public class RefundsController extends BaseController {
 
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS+",影响行数"+i+","+ii);
+                //
+                //自动修改 现库存 数量 +
+                Stock stock1 = stocks.get(0);
+                stock1.setNownumber(stock1.getNownumber()+refunds.getRetnum());
+                stockService.updateByPrimaryKey(stock1);
             }else {
                 baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",影响行数"+i+","+ii);

@@ -2,6 +2,7 @@ package com.jhr.controller;
 
 import com.jhr.entity.*;
 import com.jhr.service.RefactoryService;
+import com.jhr.service.StockService;
 import com.jhr.service.StyleService;
 import com.jhr.service.StylefacService;
 import com.jhr.utils.Sequence;
@@ -40,6 +41,8 @@ public class RefactoryController extends BaseController {
     private RefactoryService refactoryService;
     @Autowired
     private StylefacService stylefacService;
+    @Autowired
+    private StockService stockService;
 
     /**
      * 插入 返厂条目
@@ -50,8 +53,10 @@ public class RefactoryController extends BaseController {
     @RequestMapping(value = "/insertRefac",method = RequestMethod.POST)
     public BaseRsp insertRefac(@RequestBody Refactory refactory){
         BaseRsp baseRsp=new BaseRsp();
+        Stock stock=new Stock();//修改库存
         try {
             List<Style> styles=new ArrayList<Style>();
+            List<Stock> stocks =new ArrayList<Stock>();
             //
             String ss = refactory.getNumstr();
             if (null!=ss) {
@@ -63,6 +68,30 @@ public class RefactoryController extends BaseController {
                     baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",没有这个款式");
                     return baseRsp;
                 }
+                // 库存表查询
+                stock.setNumstr(refactory.getNumstr());
+                stocks = stockService.selectStockListBy(stock);
+                if (stocks.size()<=0) {
+                    baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                    baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",库存表中没有这个款式");
+                    return baseRsp;
+                }
+            }
+
+            //返厂数不为空
+            if(null==refactory.getRefnum()){
+                baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",返厂数量为空");
+                return baseRsp;
+            }
+
+            //
+            //返厂数＜=库存数
+            Stock stock1 = stocks.get(0);
+            if(refactory.getRefnum()>stock1.getNownumber()){
+                baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",返厂数量>库存数量");
+                return baseRsp;
             }
             // 返厂表插入
             refactory.setId(Sequence.getInstance().nextId());
@@ -84,6 +113,10 @@ public class RefactoryController extends BaseController {
 
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS+",影响行数"+i+","+ii);
+                //
+                //自动修改 现库存 数量
+                stock1.setNownumber(stock1.getNownumber()-refactory.getRefnum());
+                stockService.updateByPrimaryKey(stock1);
             }else {
                 baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",影响行数"+i+","+ii);
