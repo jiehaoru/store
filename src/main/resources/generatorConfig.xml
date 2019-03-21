@@ -83,65 +83,70 @@
         <!--</table>-->
         <!-- table可以有多个,每个数据库中的表都可以写一个table，tableName表示要匹配的数据库表,也可以在tableName属性中通过使用%通配符来匹配所有数据库表,只有匹配的表才会自动生成文件 -->
 
-        <table tableName="refunds" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-        <property name="useActualColumnNames" value="false" />
-        <!-- 数据库表主键 -->
-        <generatedKey column="id" sqlStatement="Mysql" identity="true" />
-        </table>
+        <!--<table tableName="refunds" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">-->
+        <!--<property name="useActualColumnNames" value="false" />-->
+        <!--&lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+        <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
 
-        <table tableName="sale" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-            <property name="useActualColumnNames" value="false" />
-            <!-- 数据库表主键 -->
-            <generatedKey column="id" sqlStatement="Mysql" identity="true" />
-        </table>
+        <!--<table tableName="sale" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">-->
+            <!--<property name="useActualColumnNames" value="false" />-->
+            <!--&lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
 
-        <table tableName="stock" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-            <property name="useActualColumnNames" value="false" />
-            <!-- 数据库表主键 -->
-            <generatedKey column="id" sqlStatement="Mysql" identity="true" />
-        </table>
+        <!--<table tableName="stock" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">-->
+            <!--<property name="useActualColumnNames" value="false" />-->
+            <!--&lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
 
-        <table tableName="style" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-            <property name="useActualColumnNames" value="false" />
-            <!-- 数据库表主键 -->
-            <generatedKey column="id" sqlStatement="Mysql" identity="true" />
-        </table>
+        <!--<table tableName="style" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">-->
+            <!--<property name="useActualColumnNames" value="false" />-->
+            <!--&lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
 
-        <table tableName="stylefac" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-            <property name="useActualColumnNames" value="false" />
-            <!-- 数据库表主键 -->
-            <generatedKey column="id" sqlStatement="Mysql" identity="true" />
-        </table>
+        <!--<table tableName="stylefac" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">-->
+            <!--<property name="useActualColumnNames" value="false" />-->
+            <!--&lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
 
-        <table tableName="stylefun" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-            <property name="useActualColumnNames" value="false" />
-            <!-- 数据库表主键 -->
-            <generatedKey column="id" sqlStatement="Mysql" identity="true" />
-        </table>
+        <!--<table tableName="stylefun" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">-->
+            <!--<property name="useActualColumnNames" value="false" />-->
+            <!--&lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
 
-        <table tableName="stylesal" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-            <property name="useActualColumnNames" value="false" />
-            <!-- 数据库表主键 -->
-            <generatedKey column="id" sqlStatement="Mysql" identity="true" />
-        </table>
+        <!--<table tableName="stylesal" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">-->
+            <!--<property name="useActualColumnNames" value="false" />-->
+            <!--&lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
 
-        <table tableName="stylesto" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-            <property name="useActualColumnNames" value="false" />
-            <!-- 数据库表主键 -->
-            <generatedKey column="id" sqlStatement="Mysql" identity="true" />
-        </table>
+        <!--<table tableName="stylesto" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">-->
+            <!--<property name="useActualColumnNames" value="false" />-->
+            <!--&lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
 
-        <table tableName="stylewar" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-            <property name="useActualColumnNames" value="false" />
-            <!-- 数据库表主键 -->
-            <generatedKey column="id" sqlStatement="Mysql" identity="true" />
-        </table>
+        <!--<table tableName="stylewar" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">-->
+            <!--<property name="useActualColumnNames" value="false" />-->
+            <!--&lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
 
-        <table tableName="warehousing" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-            <property name="useActualColumnNames" value="false" />
-            <!-- 数据库表主键 -->
-            <generatedKey column="id" sqlStatement="Mysql" identity="true" />
-        </table>
+        <!--<table tableName="user" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">-->
+            <!--<property name="useActualColumnNames" value="false" />-->
+            <!--&lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
+        <!--<table tableName="authority" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">-->
+            <!--<property name="useActualColumnNames" value="false" />-->
+            <!--&lt;!&ndash; 数据库表主键 &ndash;&gt;-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true" />-->
+        <!--</table>-->
 
     </context>
 </generatorConfiguration>

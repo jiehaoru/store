@@ -129,6 +129,29 @@
 
             $.jgrid.defaults.styleUI = 'Bootstrap';
             // Examle data for jqGrid
+
+            $.post(
+                URL : "http://localhost:8081/lecture/selectStyleListByFlag",
+
+
+            );
+            $.ajax({
+                url: "http://localhost:8081/lecture/selectStyleListByFlag",
+                type: "GET",
+                dataType: "json",
+                success:function(res){
+                    // if(json.code == '1'){
+                    //     //成功
+                    // }else{
+                    //     //出错
+                    //     obj.html('操作按钮').attr('has-click','0');
+                    // }
+                    console.log(res);
+                },
+                error:function () {
+
+                }
+            });
             var mydata = [
                 {
                     id: "1",
