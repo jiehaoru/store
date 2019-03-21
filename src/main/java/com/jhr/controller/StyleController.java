@@ -268,7 +268,7 @@ public class StyleController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/deleteByPrimaryKey",method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteByPrimaryKey",method = RequestMethod.GET)
     public BaseRsp deleteByPrimaryKey(@RequestBody Style style) {
         BaseRsp baseRsp=new BaseRsp();
         if (null==style.getId()) {

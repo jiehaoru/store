@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jhr.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.jhr.entity.User" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="authorityid" property="authorityid" jdbcType="INTEGER" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="filed1" property="filed1" jdbcType="VARCHAR" />
+    <result column="filed2" property="filed2" jdbcType="VARCHAR" />
+    <result column="filed3" property="filed3" jdbcType="VARCHAR" />
+    <result column="filed4" property="filed4" jdbcType="VARCHAR" />
+    <result column="filed5" property="filed5" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.jhr.entity.User" useGeneratedKeys="true" keyProperty="id">
+    insert into user (id,username, `password`, authorityid,
+      flag, `operator`, createtime, 
+      filed1, filed2, filed3, 
+      filed4, filed5)
+    values (#{id,jdbcType=BIGINT},#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{authorityid,jdbcType=INTEGER},
+      #{flag,jdbcType=INTEGER}, #{operator,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{filed1,jdbcType=VARCHAR}, #{filed2,jdbcType=VARCHAR}, #{filed3,jdbcType=VARCHAR}, 
+      #{filed4,jdbcType=VARCHAR}, #{filed5,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.jhr.entity.User" >
+    update user
+    set username = #{username,jdbcType=VARCHAR},
+      `password` = #{password,jdbcType=VARCHAR},
+      authorityid = #{authorityid,jdbcType=INTEGER},
+      flag = #{flag,jdbcType=INTEGER},
+      `operator` = #{operator,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      filed1 = #{filed1,jdbcType=VARCHAR},
+      filed2 = #{filed2,jdbcType=VARCHAR},
+      filed3 = #{filed3,jdbcType=VARCHAR},
+      filed4 = #{filed4,jdbcType=VARCHAR},
+      filed5 = #{filed5,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, username, `password`, authorityid, flag, `operator`, createtime, filed1, 
+    filed2, filed3, filed4, filed5
+    from user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select id, username, `password`, authorityid, flag, `operator`, createtime, filed1,
+    filed2, filed3, filed4, filed5
+    from user
+    where username = #{username,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, username, `password`, authorityid, flag, `operator`, createtime, filed1, 
+    filed2, filed3, filed4, filed5
+    from user
+  </select>
+
+  <!--非空判断 动态查询-->
+  <select id="selectUserBy" parameterType="com.jhr.entity.User" resultType="com.jhr.entity.User" >
+    select id, username, `password`, authorityid, flag, `operator`, createtime, filed1,
+    filed2, filed3, filed4, filed5
+    from user
+
+    <where>
+      1=1
+      <if test="id != null">
+        AND  id = #{id,jdbcType=BIGINT} /* id */
+      </if>
+
+      <if test="username != null and username != ''">
+        AND  username LIKE CONCAT('%',#{username,jdbcType=VARCHAR},'%') /* 用户名 */
+      </if>
+
+      <if test="password != null and password != ''">
+        AND  password = #{password,jdbcType=VARCHAR}
+      </if>
+
+      <if test="authorityid != null">
+        AND  authorityid = #{authorityid,jdbcType=INTEGER} /*权限*/
+      </if>
+
+      <if test="flag != null">
+        AND  flag = #{flag,jdbcType=INTEGER} /* 标记 */
+      </if>
+
+      <if test="operator != null and operator != ''">
+        AND  operator = #{operator,jdbcType=VARCHAR} /* 操作人 */
+      </if>
+
+      <if test="createtime != null">
+        AND  createtime = #{createtime,jdbcType=TIMESTAMP} /* 创建日期 */
+      </if>
+
+      <if test="filed1 != null and filed1 != ''">
+        AND  filed1 = #{filed1,jdbcType=VARCHAR} /* filed1 */
+      </if>
+
+      <if test="filed2 != null and filed2 != ''">
+        AND  filed2 = #{filed2,jdbcType=VARCHAR} /* filed2 */
+      </if>
+
+      <if test="filed3 != null and filed3 != ''">
+        AND  filed3 = #{filed3,jdbcType=VARCHAR} /* filed3 */
+      </if>
+
+
+      <if test="filed4 != null and filed4 != ''">
+        AND  filed4 = #{filed4,jdbcType=VARCHAR} /* filed4 */
+      </if>
+      <if test="filed5 != null and filed5 != ''">
+        AND  filed5 = #{filed5,jdbcType=VARCHAR} /* filed5 */
+      </if>
+
+    </where>
+
+    <!-- 排序信息 -->
+    <!--<if test="orderBy != null and orderBy != ''">-->
+    ORDER BY  createtime DESC /* 排序 */
+    <!--</if>-->
+  </select>
+
+</mapper>
