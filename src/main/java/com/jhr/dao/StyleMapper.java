@@ -1,9 +1,7 @@
 package com.jhr.dao;
 
-import com.jhr.entity.Style;
-import org.apache.ibatis.annotations.Mapper;
-
 import java.util.List;
+import com.jhr.entity.Style;
 
 public interface StyleMapper {
     int deleteByPrimaryKey(Long id);
