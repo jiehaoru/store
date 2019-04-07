@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 import com.jhr.entry.User;
 
 
+
 /**
  * 基础控制层
  * 仅供子类使用
