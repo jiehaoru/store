@@ -1,4 +1,4 @@
-package com.jhr.entity;
+package com.jhr.controller.vo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -6,8 +6,8 @@ import java.util.Date;
 /**
  * 返厂表
  */
-public class Refactory implements Serializable {
-    private Long id;
+public class RefactoryVO implements Serializable {
+    private String id;
 
     private String numstr; //自定义编号
 
@@ -35,11 +35,18 @@ public class Refactory implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Long getId() {
+
+    // 操作框显示用
+    public String xq="详情";
+    public String bj="编辑";
+    public String sc="删除";
+
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -48,7 +55,7 @@ public class Refactory implements Serializable {
     }
 
     public void setNumstr(String numstr) {
-        this.numstr = numstr == null ? null : numstr.trim();
+        this.numstr = numstr;
     }
 
     public Double getRefpri() {
@@ -88,7 +95,7 @@ public class Refactory implements Serializable {
     }
 
     public void setOperator(String operator) {
-        this.operator = operator == null ? null : operator.trim();
+        this.operator = operator;
     }
 
     public Date getCreatetime() {
@@ -104,7 +111,7 @@ public class Refactory implements Serializable {
     }
 
     public void setFiled1(String filed1) {
-        this.filed1 = filed1 == null ? null : filed1.trim();
+        this.filed1 = filed1;
     }
 
     public String getFiled2() {
@@ -112,7 +119,7 @@ public class Refactory implements Serializable {
     }
 
     public void setFiled2(String filed2) {
-        this.filed2 = filed2 == null ? null : filed2.trim();
+        this.filed2 = filed2;
     }
 
     public String getFiled3() {
@@ -120,7 +127,7 @@ public class Refactory implements Serializable {
     }
 
     public void setFiled3(String filed3) {
-        this.filed3 = filed3 == null ? null : filed3.trim();
+        this.filed3 = filed3;
     }
 
     public String getFiled4() {
@@ -128,7 +135,7 @@ public class Refactory implements Serializable {
     }
 
     public void setFiled4(String filed4) {
-        this.filed4 = filed4 == null ? null : filed4.trim();
+        this.filed4 = filed4;
     }
 
     public String getFiled5() {
@@ -136,37 +143,8 @@ public class Refactory implements Serializable {
     }
 
     public void setFiled5(String filed5) {
-        this.filed5 = filed5 == null ? null : filed5.trim();
+        this.filed5 = filed5;
     }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", numstr=").append(numstr);
-        sb.append(", refpri=").append(refpri);
-        sb.append(", refnum=").append(refnum);
-        sb.append(", refdate=").append(refdate);
-        sb.append(", flag=").append(flag);
-        sb.append(", operator=").append(operator);
-        sb.append(", createtime=").append(createtime);
-        sb.append(", filed1=").append(filed1);
-        sb.append(", filed2=").append(filed2);
-        sb.append(", filed3=").append(filed3);
-        sb.append(", filed4=").append(filed4);
-        sb.append(", filed5=").append(filed5);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
-    }
-
-    // 操作框显示用
-    public String xq="详情";
-    public String bj="编辑";
-    public String sc="删除";
 
     public String getXq() {
         return xq;
@@ -190,5 +168,27 @@ public class Refactory implements Serializable {
 
     public void setSc(String sc) {
         this.sc = sc;
+    }
+
+    @Override
+    public String toString() {
+        return "RefactoryVO{" +
+                "id='" + id + '\'' +
+                ", numstr='" + numstr + '\'' +
+                ", refpri=" + refpri +
+                ", refnum=" + refnum +
+                ", refdate=" + refdate +
+                ", flag=" + flag +
+                ", operator='" + operator + '\'' +
+                ", createtime=" + createtime +
+                ", filed1='" + filed1 + '\'' +
+                ", filed2='" + filed2 + '\'' +
+                ", filed3='" + filed3 + '\'' +
+                ", filed4='" + filed4 + '\'' +
+                ", filed5='" + filed5 + '\'' +
+                ", xq='" + xq + '\'' +
+                ", bj='" + bj + '\'' +
+                ", sc='" + sc + '\'' +
+                '}';
     }
 }

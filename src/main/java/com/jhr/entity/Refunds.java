@@ -162,4 +162,32 @@ public class Refunds implements Serializable {
         sb.append("]");
         return sb.toString();
     }
+    // 操作框显示用
+    public String xq="详情";
+    public String bj="编辑";
+    public String sc="删除";
+
+    public String getXq() {
+        return xq;
+    }
+
+    public void setXq(String xq) {
+        this.xq = xq;
+    }
+
+    public String getBj() {
+        return bj;
+    }
+
+    public void setBj(String bj) {
+        this.bj = bj;
+    }
+
+    public String getSc() {
+        return sc;
+    }
+
+    public void setSc(String sc) {
+        this.sc = sc;
+    }
 }

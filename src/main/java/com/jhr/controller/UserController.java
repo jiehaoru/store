@@ -65,8 +65,8 @@ public class UserController {
 
         //如何对密码加密？ MD5算法
 
-        User user1 = userService.login(user.getUsername(), user.getPassword());
-
+        User user1 = userService.login(user);
+        System.out.println("123");
         //判断用户是否登录成功 user是否是null
         if (user1 != null) {
             //登录成功
@@ -81,7 +81,7 @@ public class UserController {
 //                response.addCookie(cookie_username);
 //                response.addCookie(cookie_password);
 //            }
-            //session.setAttribute("user", user1);
+//            session.setAttribute("user", user);
             return "0";
         } else {
 //            request.setAttribute("loginError", "用户名或密码错误");

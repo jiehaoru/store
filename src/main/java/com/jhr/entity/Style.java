@@ -219,7 +219,7 @@ public class Style implements Serializable {
     }
 
 
-    //
+    // 操作框显示用
     public String xq="详情";
     public String bj="编辑";
     public String sc="删除";

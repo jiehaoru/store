@@ -1,4 +1,4 @@
-package com.jhr.entity;
+package com.jhr.controller.vo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -6,8 +6,8 @@ import java.util.Date;
 /**
  * 入库表
  */
-public class Warehousing implements Serializable {
-    private Long id;
+public class WarehousingVO implements Serializable {
+    private String id;
 
     private String numstr; //自定义编号
 
@@ -35,11 +35,11 @@ public class Warehousing implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

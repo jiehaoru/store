@@ -1,5 +1,6 @@
 package com.jhr.controller;
 
+import com.jhr.controller.vo.SaleVO;
 import com.jhr.entity.*;
 import com.jhr.service.SaleService;
 import com.jhr.service.StockService;
@@ -10,6 +11,7 @@ import com.jhr.utils.base.BaseRsp;
 import com.jhr.utils.base.BaseRspConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,19 +49,19 @@ public class SaleController extends BaseController {
     /**
      * 插入 出售条目
      *
-     * @param sale
+     * @param saleVO
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/insertSale", method = RequestMethod.POST)
-    public BaseRsp insertSale(@RequestBody Sale sale) {
+    public BaseRsp insertSale(@RequestBody SaleVO saleVO) {
         BaseRsp baseRsp = new BaseRsp();
         Stock stock=new Stock();//修改库存
         try {
             List<Style> styles = new ArrayList<Style>();
             List<Stock> stocks =new ArrayList<Stock>();
             // 编号非空
-            String ss = sale.getNumstr();
+            String ss = saleVO.getNumstr();
             if (null != ss) {
                 Style style = new Style();
                 style.setNumstr(ss);
@@ -70,7 +72,7 @@ public class SaleController extends BaseController {
                     return baseRsp;
                 }
                 // 库存表查询
-                stock.setNumstr(sale.getNumstr());
+                stock.setNumstr(saleVO.getNumstr());
                 stocks = stockService.selectStockListBy(stock);
                 if (stocks.size()<=0) {
                     baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -80,7 +82,7 @@ public class SaleController extends BaseController {
             }
 
             //出售数不为空
-            if(null==sale.getSalenum()){
+            if(null==saleVO.getSalenum()){
                 baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",出售数量为空");
                 return baseRsp;
@@ -89,13 +91,15 @@ public class SaleController extends BaseController {
             //
             //出售数＜=库存数
             Stock stock1 = stocks.get(0);
-            if(sale.getSalenum()>stock1.getNownumber()){
+            if(saleVO.getSalenum()>stock1.getNownumber()){
                 baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",出售数量>库存数量");
                 return baseRsp;
             }
 
             // 入库表插入
+            Sale sale=new Sale();
+            BeanUtils.copyProperties(saleVO,sale);
             sale.setId(Sequence.getInstance().nextId());
             sale.setFlag(1);//1 有效
             sale.setCreatetime(new Date());
@@ -146,14 +150,23 @@ public class SaleController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectSaleListByFlag", method = RequestMethod.GET)
-    public BaseRsp<List<Sale>> selectSaleListByFlag() {
-        BaseRsp<List<Sale>> baseRsp = new BaseRsp<List<Sale>>();
+    public BaseRsp<List<SaleVO>> selectSaleListByFlag() {
+        BaseRsp<List<SaleVO>> baseRsp = new BaseRsp<List<SaleVO>>();
         Sale sale = new Sale();
         List<Sale> list = null;
+        List<SaleVO> listVO=new ArrayList<>();
         try {
             sale.setFlag(1);
             list = saleService.selectSaleListBy(sale);
-            baseRsp.setData(list);
+            if (list.size()>0){
+                for (Sale sale1 : list) {
+                    SaleVO vo=new SaleVO();
+                    BeanUtils.copyProperties(sale1,vo);
+                    vo.setId(String.valueOf(sale1.getId()));
+                    listVO.add(vo);
+                }
+            }
+            baseRsp.setData(listVO);
             baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
         } catch (Exception e) {
@@ -175,21 +188,32 @@ public class SaleController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectSaleListByNumStr", method = RequestMethod.POST)
-    public BaseRsp<List<Sale>> selectSaleListByNumStr(@RequestBody Sale sale) {
-        BaseRsp<List<Sale>> baseRsp = new BaseRsp<List<Sale>>();
+    public BaseRsp<List<SaleVO>> selectSaleListByNumStr(@RequestBody SaleVO saleVO) {
+        BaseRsp<List<SaleVO>> baseRsp = new BaseRsp<List<SaleVO>>();
         List<Sale> list = null;
-        if (null == sale.getNumstr()) {
+        List<SaleVO> listVO=new ArrayList<>();
+        if (null == saleVO.getNumstr()) {
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",Numstr 为空");
             return baseRsp;
         }
 
         try {
+            Sale sale=new Sale();
+            BeanUtils.copyProperties(saleVO,sale);
             sale.setFlag(1);
             list = saleService.selectSaleListBy(sale);
+            if (list.size()>0){
+                for (Sale sale1 : list) {
+                    SaleVO vo=new SaleVO();
+                    BeanUtils.copyProperties(sale1,vo);
+                    vo.setId(String.valueOf(sale1.getId()));
+                    listVO.add(vo);
+                }
+            }
             baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
-            baseRsp.setData(list);
+            baseRsp.setData(listVO);
         } catch (Exception e) {
             LOGGER.error("SaleController========>selectSaleListByNumStr失败", e);
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -203,25 +227,31 @@ public class SaleController extends BaseController {
     /**
      * 通过id查询
      *
-     * @param sale
+     * @param saleVO
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/selectSale", method = RequestMethod.POST)
-    public BaseRsp<Sale> selectSale(@RequestBody Sale sale) {
-        BaseRsp<Sale> baseRsp = new BaseRsp<Sale>();
+    public BaseRsp<SaleVO> selectSale(@RequestBody SaleVO saleVO) {
+        BaseRsp<SaleVO> baseRsp = new BaseRsp<SaleVO>();
 
-        if (null == sale.getId()) {
+        if (null == saleVO.getId()) {
             LOGGER.error("SaleController========>selectSale失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",selectSale失败,id为空");
             return baseRsp;
         }
         try {
-            Sale rsp = new Sale();
-            List<Sale> sales = saleService.selectSaleListBy(sale);
+            SaleVO rsp = new SaleVO();
+            Sale req=new Sale();
+            BeanUtils.copyProperties(saleVO,req);
+            req.setId(Long.valueOf(saleVO.getId()));
+            List<Sale> sales = saleService.selectSaleListBy(req);
             if (sales.size() > 0) {
-                rsp = sales.get(0);
+               Sale sale=sales.get(0);
+               BeanUtils.copyProperties(sale,rsp);
+               rsp.setId(String.valueOf(sale.getId()));
+
             }
             baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
@@ -243,9 +273,9 @@ public class SaleController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/updateSale", method = RequestMethod.POST)
-    public BaseRsp updateSale(@RequestBody Sale sale) {
+    public BaseRsp updateSale(@RequestBody SaleVO saleVO) {
         BaseRsp baseRsp = new BaseRsp();
-        if (null == sale.getId()) {
+        if (null == saleVO.getId()) {
             LOGGER.error("SaleController========>updateSale失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",updateSale失败,id为空");
@@ -254,6 +284,9 @@ public class SaleController extends BaseController {
 
         int re;
         try {
+            Sale sale=new Sale();
+            BeanUtils.copyProperties(saleVO,sale);
+            sale.setId(Long.valueOf(saleVO.getId()));
             re = saleService.updateByPrimaryKey(sale);
             if (re > 0) {
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
@@ -275,14 +308,14 @@ public class SaleController extends BaseController {
     /**
      * 物理删除
      *
-     * @param sale
+     * @param saleVO
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/deleteSale", method = RequestMethod.POST)
-    public BaseRsp deleteSale(@RequestBody Sale sale) {
+    public BaseRsp deleteSale(@RequestBody SaleVO saleVO) {
         BaseRsp baseRsp = new BaseRsp();
-        if (null == sale.getId()) {
+        if (null == saleVO.getId()) {
             LOGGER.error("SaleController========>deleteSale失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",deleteSale失败,id为空");
@@ -292,11 +325,11 @@ public class SaleController extends BaseController {
         int re;
         int ree = 0;
         try {
-            re = saleService.deleteByPrimaryKey(sale.getId());
+            re = saleService.deleteByPrimaryKey(Long.valueOf(saleVO.getId()));
             if (re > 0) {
                 //删除中间表的全部相关信息
                 Stylesal stylesal = new Stylesal();
-                stylesal.setSaleid(sale.getId());
+                stylesal.setSaleid(Long.valueOf(saleVO.getId()));
                 ree = stylesalService.deleteBy(stylesal);
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
                 baseRsp.setRespCode(BaseRspConstants.RSP_DESC_SUCCESS + ",影响行数" + re + "," + ree);

@@ -50,13 +50,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User login(String username, String password) {
+    public User login(User user) {
 
-        User user = mapper.selectByName(username);
-        if(password.equals(user.getPassword())){
-            return user;
-        }
-        return null;
+
+        return mapper.loginByUser(user);
+
     }
 
     @Override
