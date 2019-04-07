@@ -1,9 +1,7 @@
 package com.jhr.service;
 
-import com.jhr.entity.Style;
-import com.jhr.utils.base.BaseRsp;
-
 import java.util.List;
+import com.jhr.entity.Style;
 
 /**
  * <br>
