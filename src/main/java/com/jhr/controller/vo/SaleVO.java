@@ -1,21 +1,21 @@
-package com.jhr.entity;
+package com.jhr.controller.vo;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 入库表
+ * 出售表
  */
-public class Warehousing implements Serializable {
-    private Long id;
+public class SaleVO implements Serializable {
+    private String id;
 
     private String numstr; //自定义编号
 
-    private Long number; //数量
+    private Double salepri; //出售价格
 
-    private Date intotime; //入库时间
+    private Long salenum; //出售数量
 
-    private Double radeprice; //批发价
+    private Date saledate; //出售日期
 
     private Integer flag; //状态
 
@@ -35,11 +35,11 @@ public class Warehousing implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -51,28 +51,28 @@ public class Warehousing implements Serializable {
         this.numstr = numstr == null ? null : numstr.trim();
     }
 
-    public Long getNumber() {
-        return number;
+    public Double getSalepri() {
+        return salepri;
     }
 
-    public void setNumber(Long number) {
-        this.number = number;
+    public void setSalepri(Double salepri) {
+        this.salepri = salepri;
     }
 
-    public Date getIntotime() {
-        return intotime;
+    public Long getSalenum() {
+        return salenum;
     }
 
-    public void setIntotime(Date intotime) {
-        this.intotime = intotime;
+    public void setSalenum(Long salenum) {
+        this.salenum = salenum;
     }
 
-    public Double getRadeprice() {
-        return radeprice;
+    public Date getSaledate() {
+        return saledate;
     }
 
-    public void setRadeprice(Double radeprice) {
-        this.radeprice = radeprice;
+    public void setSaledate(Date saledate) {
+        this.saledate = saledate;
     }
 
     public Integer getFlag() {
@@ -147,9 +147,9 @@ public class Warehousing implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", numstr=").append(numstr);
-        sb.append(", number=").append(number);
-        sb.append(", intotime=").append(intotime);
-        sb.append(", radeprice=").append(radeprice);
+        sb.append(", salepri=").append(salepri);
+        sb.append(", salenum=").append(salenum);
+        sb.append(", saledate=").append(saledate);
         sb.append(", flag=").append(flag);
         sb.append(", operator=").append(operator);
         sb.append(", createtime=").append(createtime);

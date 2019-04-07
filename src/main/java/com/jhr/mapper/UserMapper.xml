@@ -57,6 +57,12 @@
     from user
     where username = #{username,jdbcType=VARCHAR}
   </select>
+  <select id="loginByUser" resultType="com.jhr.entity.User" parameterType="com.jhr.entity.User" >
+    select id, username, `password`, authorityid, flag, `operator`, createtime, filed1,
+    filed2, filed3, filed4, filed5
+    from user
+    where username = #{username,jdbcType=VARCHAR} AND password = #{password,jdbcType=VARCHAR}
+  </select>
   <select id="selectAll" resultMap="BaseResultMap" >
     select id, username, `password`, authorityid, flag, `operator`, createtime, filed1, 
     filed2, filed3, filed4, filed5

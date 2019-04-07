@@ -1,5 +1,6 @@
 package com.jhr.controller;
 
+import com.jhr.controller.vo.StockVO;
 import com.jhr.entity.*;
 import com.jhr.service.StockService;
 import com.jhr.service.StyleService;
@@ -7,8 +8,10 @@ import com.jhr.service.StylestoService;
 import com.jhr.utils.Sequence;
 import com.jhr.utils.base.BaseRsp;
 import com.jhr.utils.base.BaseRspConstants;
+import com.mchange.io.impl.LazyReadOnlyMemoryFileImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,18 +46,18 @@ public class StockController extends BaseController {
 
     /**
      * 插入 库存条目
-     * @param stock
+     * @param stockVO
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/insertStock",method = RequestMethod.POST)
-    public BaseRsp insertStock(@RequestBody Stock stock){
+    public BaseRsp insertStock(@RequestBody StockVO stockVO){
         BaseRsp baseRsp=new BaseRsp();
 
         try {
             List<Style> styles=new ArrayList<Style>();
-            //
-            String ss = stock.getNumstr();
+            // .
+            String ss = stockVO.getNumstr();
             if (null!=ss) {
                 Style style=new Style();
                 style.setNumstr(ss);
@@ -66,6 +69,8 @@ public class StockController extends BaseController {
                 }
             }
             // 入库表插入
+            Stock stock=new Stock();
+            BeanUtils.copyProperties(stockVO,stock);
             stock.setId(Sequence.getInstance().nextId());
             stock.setFlag(1);//1 有效
             stock.setCreatetime(new Date());
@@ -109,16 +114,25 @@ public class StockController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectStockListByFlag",method = RequestMethod.GET)
-    public BaseRsp< List<Stock>> selectStockListByFlag(){
+    public BaseRsp< List<StockVO>> selectStockListByFlag(){
 
 
-        BaseRsp< List<Stock>> baseRsp=new BaseRsp< List<Stock>>();
+        BaseRsp< List<StockVO>> baseRsp=new BaseRsp< List<StockVO>>();
         List<Stock> list =null;
+        List<StockVO> listvo=new ArrayList<>();
         Stock stoc=new Stock();
         try {
             stoc.setFlag(1);
             list =stockService.selectStockListBy(stoc);
-            baseRsp.setData(list);
+            if (list.size()>0){
+                for (Stock stock : list) {
+                    StockVO vo=new StockVO();
+                    BeanUtils.copyProperties(stock,vo);
+                    vo.setId(String.valueOf(stock.getId()));
+                    listvo.add(vo);
+                }
+            }
+            baseRsp.setData(listvo);
             baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
         }catch (Exception e){
@@ -139,21 +153,32 @@ public class StockController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectStockListByNumStr",method = RequestMethod.POST)
-    public BaseRsp<List<Stock>> selectStockListByNumStr(@RequestBody Stock stock ){
-        BaseRsp<List<Stock>> baseRsp=new BaseRsp<List<Stock>>();
+    public BaseRsp<List<StockVO>> selectStockListByNumStr(@RequestBody StockVO stockVO ){
+        BaseRsp<List<StockVO>> baseRsp=new BaseRsp<List<StockVO>>();
         List<Stock> list =null;
-        if (null==stock.getNumstr()) {
+        if (null==stockVO.getNumstr()) {
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",Numstr 为空");
             return baseRsp;
         }
 
         try {
+            Stock stock=new Stock();
+            BeanUtils.copyProperties(stockVO,stock);
             stock.setFlag(1);
             list =stockService.selectStockListBy(stock);
             baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
-            baseRsp.setData(list);
+            List<StockVO> listvo=new ArrayList<>();
+            if (list.size()>0){
+                for (Stock stock1 : list) {
+                    StockVO vo=new StockVO();
+                    BeanUtils.copyProperties(stock1,vo);
+                    vo.setId(String.valueOf(stock1.getId()));
+                    listvo.add(vo);
+                }
+            }
+            baseRsp.setData(listvo);
         }catch (Exception e){
             LOGGER.error("StockController========>selectStockListByNumStr失败", e);
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -166,28 +191,32 @@ public class StockController extends BaseController {
 
     /**
      * 根据id查询
-     * @param stock
+     * @param stockVO
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/selectStock",method = RequestMethod.POST)
-    public BaseRsp<Stock> selectStock(@RequestBody Stock stock){
-        BaseRsp<Stock> baseRsp=new BaseRsp<>();
-        if(null==stock.getId()){
+    public BaseRsp<StockVO> selectStock(@RequestBody StockVO stockVO){
+        BaseRsp<StockVO> baseRsp=new BaseRsp<StockVO>();
+        if(null==stockVO.getId()){
             LOGGER.error("StockController========>selectStock失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",selectStock失败,id为空");
             return baseRsp;
         }
         try {
-            Stock rsp=new Stock();
-            List<Stock> stocks = stockService.selectStockListBy(stock);
+            StockVO rspVO=new StockVO();
+            Stock req=new Stock();
+            req.setId(Long.valueOf(stockVO.getId()));
+            List<Stock> stocks = stockService.selectStockListBy(req);
             if (stocks.size()>0) {
-                rsp=stocks.get(0);
+                Stock stock = stocks.get(0);
+                BeanUtils.copyProperties(stock,rspVO);
+                rspVO.setId(String.valueOf(stock.getId()));
             }
             baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
-            baseRsp.setData(rsp);
+            baseRsp.setData(rspVO);
         }catch (Exception e){
             LOGGER.error("StockController========>selectStock失败", e);
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -205,9 +234,9 @@ public class StockController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/updateStock",method = RequestMethod.POST)
-    public BaseRsp updateStock(@RequestBody Stock stock) {
+    public BaseRsp updateStock(@RequestBody StockVO stockVO) {
         BaseRsp baseRsp=new BaseRsp();
-        if (null==stock.getId()) {
+        if (null==stockVO.getId()) {
             LOGGER.error("StockController========>updateStock失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",updateStock失败,id为空");
@@ -216,6 +245,9 @@ public class StockController extends BaseController {
 
         int re;
         try {
+            Stock stock=new Stock();
+            BeanUtils.copyProperties(stockVO,stock);
+            stock.setId(Long.valueOf(stockVO.getId()));
             re = stockService.updateByPrimaryKey(stock);
             if (re>0){
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
@@ -236,14 +268,14 @@ public class StockController extends BaseController {
 
     /**
      * 物理删除
-     * @param stock
+     * @param stockVO
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/deleteStock",method = RequestMethod.POST)
-    public BaseRsp deleteStock(@RequestBody Stock stock) {
+    public BaseRsp deleteStock(@RequestBody StockVO stockVO) {
         BaseRsp baseRsp=new BaseRsp();
-        if (null==stock.getId()) {
+        if (null==stockVO.getId()) {
             LOGGER.error("StockController========>deleteWarehousing失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",deleteWarehousing失败,id为空");
@@ -253,11 +285,11 @@ public class StockController extends BaseController {
         int re;
         int ree=0;
         try {
-            re=stockService.deleteByPrimaryKey(stock.getId());
+            re=stockService.deleteByPrimaryKey(Long.valueOf(stockVO.getId()));
             if (re>0){
                 //删除中间表的全部相关信息
                 Stylesto stylesto=new Stylesto();
-                stylesto.setStockid(stock.getId());
+                stylesto.setStockid(Long.valueOf(stockVO.getId()));
                 ree= stylestoService.deleteBy(stylesto);
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
                 baseRsp.setRespCode(BaseRspConstants.RSP_DESC_SUCCESS+",影响行数"+re+","+ree);

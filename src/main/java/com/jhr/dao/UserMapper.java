@@ -1,6 +1,8 @@
 package com.jhr.dao;
 
 import com.jhr.entity.User;
+
+import javax.jws.soap.SOAPBinding;
 import java.util.List;
 
 public interface UserMapper {
@@ -17,4 +19,6 @@ public interface UserMapper {
     List<User> selectUserBy(User record);
 
     User selectByName(String name);
+
+    User loginByUser(User record);
 }

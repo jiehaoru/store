@@ -186,6 +186,16 @@
       <version>${commons-io.version}</version>
     </dependency>
 
+    <!--对象拷贝用-->
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-beans -->
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-beans -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>4.3.14.RELEASE</version>
+    </dependency>
+
+
   </dependencies>
 
   <build>

@@ -115,15 +115,15 @@
         AND  numstr LIKE CONCAT('%',#{numstr,jdbcType=VARCHAR},'%') /* 自定义编号 */
       </if>
 
-      <if test="refpri != null">
+      <if test="retpri != null">
         AND  retpri = #{retpri,jdbcType=DOUBLE} /* 退货价格 */
       </if>
 
-      <if test="refnum != null">
+      <if test="retnum != null">
         AND  retnum = #{retnum,jdbcType=BIGINT} /* 退货数量 */
       </if>
 
-      <if test="refdate != null">
+      <if test="retdate != null">
         AND  retdate = #{retdate,jdbcType=TIMESTAMP} /* 退货日期 */
       </if>
 

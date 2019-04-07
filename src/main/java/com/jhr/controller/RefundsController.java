@@ -1,5 +1,6 @@
 package com.jhr.controller;
 
+import com.jhr.controller.vo.RefundsVO;
 import com.jhr.entity.*;
 import com.jhr.service.*;
 import com.jhr.utils.Sequence;
@@ -7,7 +8,9 @@ import com.jhr.utils.base.BaseRsp;
 import com.jhr.utils.base.BaseRspConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,19 +47,19 @@ public class RefundsController extends BaseController {
 
     /**
      * 插入 退货条目
-     * @param refunds
+     * @param refundsVO
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/insertRefunds",method = RequestMethod.POST)
-    public BaseRsp insertRefunds(@RequestBody Refunds refunds){
+    public BaseRsp insertRefunds(@RequestBody RefundsVO refundsVO){
         BaseRsp baseRsp=new BaseRsp();
         try {
             List<Style> styles=new ArrayList<Style>();
             Stock stock=new Stock();//修改库存
             List<Stock> stocks =new ArrayList<Stock>();
             //
-            String ss = refunds.getNumstr();
+            String ss = refundsVO.getNumstr();
             if (ss == null) {
                 baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",自定义编号不能为空");
@@ -72,7 +75,7 @@ public class RefundsController extends BaseController {
                     return baseRsp;
                 }
                 // 库存表查询
-                stock.setNumstr(refunds.getNumstr());
+                stock.setNumstr(refundsVO.getNumstr());
                 stocks = stockService.selectStockListBy(stock);
                 if (stocks.size()<=0) {
                     baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -81,14 +84,14 @@ public class RefundsController extends BaseController {
                 }
             }
             //退货数不为空
-            if(null==refunds.getRetnum()){
+            if(null==refundsVO.getRetnum()){
                 baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",退货数量为空");
                 return baseRsp;
             }
             //退货数<=出售数
             Sale sale=new Sale();
-            sale.setNumstr(refunds.getNumstr());
+            sale.setNumstr(refundsVO.getNumstr());
             sale.setFlag(1);
             List<Sale> sales = saleService.selectSaleListBy(sale);
             if(sales.size()==0){
@@ -100,13 +103,15 @@ public class RefundsController extends BaseController {
             for (int i = 0; i <sales.size() ; i++) {
                     num+=sales.get(i).getSalenum();
             }
-            if(refunds.getRetnum()>num){
+            if(refundsVO.getRetnum()>num){
                 baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",退货数大于售出总数");
                 return baseRsp;
             }
 
             // 返厂表插入
+            Refunds refunds=new Refunds();
+            BeanUtils.copyProperties(refundsVO,refunds);
             refunds.setId(Sequence.getInstance().nextId());
             refunds.setFlag(1);//1 有效
             refunds.setCreatetime(new Date());
@@ -155,14 +160,23 @@ public class RefundsController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectRefundsListByFlag",method = RequestMethod.GET)
-    public BaseRsp<List<Refunds>> selectRefundsListByFlag(){
-        BaseRsp<List<Refunds>> baseRsp=new BaseRsp<List<Refunds>>();
+    public BaseRsp<List<RefundsVO>> selectRefundsListByFlag(){
+        BaseRsp<List<RefundsVO>> baseRsp=new BaseRsp<List<RefundsVO>>();
         Refunds refunds=new Refunds();
         List<Refunds> list =null;
+        List<RefundsVO> listVO=new ArrayList<>();
         try {
             refunds.setFlag(1);
             list =refundsService.selectRefundsListBy(refunds);
-            baseRsp.setData(list);
+            if(list.size()>0){
+                for (Refunds refunds1 : list) {
+                    RefundsVO vo=new RefundsVO();
+                    BeanUtils.copyProperties(refunds1,vo);
+                    vo.setId(String.valueOf(refunds1.getId()));
+                    listVO.add(vo);
+                }
+            }
+            baseRsp.setData(listVO);
             baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
         }catch (Exception e){
@@ -183,21 +197,32 @@ public class RefundsController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectRefundsListByNumStr",method = RequestMethod.POST)
-    public BaseRsp<List<Refunds>> selectRefundsListByNumStr(@RequestBody Refunds refunds){
-        BaseRsp<List<Refunds>> baseRsp=new BaseRsp<List<Refunds>>();
+    public BaseRsp<List<RefundsVO>> selectRefundsListByNumStr(@RequestBody RefundsVO refundsVO){
+        BaseRsp<List<RefundsVO>> baseRsp=new BaseRsp<List<RefundsVO>>();
         List<Refunds> list =null;
-        if (null==refunds.getNumstr()) {
+        List<RefundsVO> listVO=new ArrayList<>();
+        if (null==refundsVO.getNumstr()) {
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",Numstr 为空");
             return baseRsp;
         }
 
         try {
+            Refunds refunds=new Refunds();
+            BeanUtils.copyProperties(refundsVO,refunds);
             refunds.setFlag(1);
             list =refundsService.selectRefundsListBy(refunds);
+            if(list.size()>0){
+                for (Refunds refunds1 : list) {
+                    RefundsVO vo=new RefundsVO();
+                    BeanUtils.copyProperties(refunds1,vo);
+                    vo.setId(String.valueOf(refunds1.getId()));
+                    listVO.add(vo);
+                }
+            }
             baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
-            baseRsp.setData(list);
+            baseRsp.setData(listVO);
         }catch (Exception e){
             LOGGER.error("RefundsController========>selectRefundsListByNumStr失败", e);
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -210,25 +235,29 @@ public class RefundsController extends BaseController {
 
     /**
      *  通过id查询
-     * @param refunds
+     * @param refundsVO
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/selectRefunds",method = RequestMethod.POST)
-    public BaseRsp<Refunds> selectRefunds(@RequestBody Refunds refunds){
-        BaseRsp<Refunds> baseRsp =new BaseRsp<Refunds>();
+    public BaseRsp<RefundsVO> selectRefunds(@RequestBody RefundsVO refundsVO){
+        BaseRsp<RefundsVO> baseRsp =new BaseRsp<RefundsVO>();
 
-        if(null==refunds.getId()){
+        if(null==refundsVO.getId()){
             LOGGER.error("RefundsController========>selectRefunds失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",selectRefunds失败,id为空");
             return baseRsp;
         }
         try {
+            Refunds refunds=new Refunds();
+            BeanUtils.copyProperties(refundsVO,refunds);
+            refunds.setId(Long.valueOf(refundsVO.getId()));
             List<Refunds> refunds1 = refundsService.selectRefundsListBy(refunds);
-            Refunds rsp=new Refunds();
+            RefundsVO rsp=new RefundsVO();
             if (refunds1.size()>0){
-                rsp=refunds1.get(0);
+                BeanUtils.copyProperties(refunds1.get(0),rsp);
+                rsp.setId(String.valueOf(refunds1.get(0).getId()));
             }
             baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
@@ -250,9 +279,9 @@ public class RefundsController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/updateRefunds",method = RequestMethod.POST)
-    public BaseRsp updateRefunds(@RequestBody Refunds refunds) {
+    public BaseRsp updateRefunds(@RequestBody RefundsVO refundsVO) {
         BaseRsp baseRsp=new BaseRsp();
-        if (null==refunds.getId()) {
+        if (null==refundsVO.getId()) {
             LOGGER.error("RefundsController========>updateRefunds失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",updateRefunds失败,id为空");
@@ -261,6 +290,9 @@ public class RefundsController extends BaseController {
 
         int re;
         try {
+            Refunds refunds=new Refunds();
+            BeanUtils.copyProperties(refundsVO,refunds);
+            refunds.setId(Long.valueOf(refundsVO.getId()));
             re = refundsService.updateByPrimaryKey(refunds);
             if (re>0){
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
@@ -281,14 +313,14 @@ public class RefundsController extends BaseController {
 
     /**
      * 物理删除
-     * @param refunds
+     * @param refundsVO
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/deleteRefunds",method = RequestMethod.POST)
-    public BaseRsp deleteRefunds(@RequestBody Refunds refunds) {
+    public BaseRsp deleteRefunds(@RequestBody RefundsVO refundsVO) {
         BaseRsp baseRsp=new BaseRsp();
-        if (null==refunds.getId()) {
+        if (null==refundsVO.getId()) {
             LOGGER.error("RefundsController========>deleteRefunds失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",deleteRefunds失败,id为空");
@@ -298,11 +330,11 @@ public class RefundsController extends BaseController {
         int re;
         int ree=0;
         try {
-            re=refundsService.deleteByPrimaryKey(refunds.getId());
+            re=refundsService.deleteByPrimaryKey(Long.valueOf(refundsVO.getId()));
             if (re>0){
                 //删除中间表的全部相关信息
                Stylefun stylefun=new Stylefun();
-                stylefun.setRefundsid(refunds.getId());
+                stylefun.setRefundsid(Long.valueOf(refundsVO.getId()));
                 ree= stylefunService.deleteBy(stylefun);
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
                 baseRsp.setRespCode(BaseRspConstants.RSP_DESC_SUCCESS+",影响行数"+re+","+ree);

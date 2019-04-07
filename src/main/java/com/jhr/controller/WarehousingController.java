@@ -1,5 +1,7 @@
 package com.jhr.controller;
 
+import com.jhr.controller.vo.StockVO;
+import com.jhr.controller.vo.WarehousingVO;
 import com.jhr.entity.*;
 import com.jhr.service.StyleService;
 import com.jhr.service.StylewarService;
@@ -7,8 +9,10 @@ import com.jhr.service.WarehousingService;
 import com.jhr.utils.Sequence;
 import com.jhr.utils.base.BaseRsp;
 import com.jhr.utils.base.BaseRspConstants;
+import com.mchange.io.impl.LazyReadOnlyMemoryFileImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,18 +49,18 @@ public class  WarehousingController extends  BaseController {
 
     /**
      * 插入 入库条目
-     * @param warehousing
+     * @param warehousingVO
      * @return
      */
     @RequestMapping(value = "/insertWare",method = RequestMethod.POST)
     @ResponseBody
-    public BaseRsp insertWare(@RequestBody Warehousing warehousing){
+    public BaseRsp insertWare(@RequestBody WarehousingVO warehousingVO){
         BaseRsp baseRsp=new BaseRsp();
-        Stock stock=new Stock();//自动插入库存表
+        StockVO stock=new StockVO();//自动插入库存表
         try {
             List<Style> styles=new ArrayList<Style>();
             //
-            String ss = warehousing.getNumstr();
+            String ss = warehousingVO.getNumstr();
 
             if (null!=ss) {
                 Style style=new Style();
@@ -73,6 +77,8 @@ public class  WarehousingController extends  BaseController {
                 return baseRsp;
             }
             // 入库表插入
+            Warehousing warehousing=new Warehousing();
+            BeanUtils.copyProperties(warehousingVO,warehousing);
             warehousing.setId(Sequence.getInstance().nextId());
             warehousing.setFlag(1);//1 有效
             warehousing.setCreatetime(new Date());
@@ -124,14 +130,23 @@ public class  WarehousingController extends  BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectWarehousingListByFlag",method = RequestMethod.GET)
-    public BaseRsp< List<Warehousing>> selectWarehousingListByFlag(){
-        BaseRsp< List<Warehousing>> baseRsp=new BaseRsp< List<Warehousing>>();
+    public BaseRsp< List<WarehousingVO>> selectWarehousingListByFlag(){
+        BaseRsp< List<WarehousingVO>> baseRsp=new BaseRsp< List<WarehousingVO>>();
         Warehousing warehousing=new Warehousing();
         List<Warehousing> list =null;
+        List<WarehousingVO> listvo=new ArrayList<>();
         try {
             warehousing.setFlag(1);
             list =warehousingService.selectWarehousingListBy(warehousing);
-            baseRsp.setData(list);
+            if (list.size()>0) {
+                for (Warehousing warehousing1 : list) {
+                    WarehousingVO vo=new WarehousingVO();
+                    BeanUtils.copyProperties(warehousing1,vo);
+                    vo.setId(String.valueOf(warehousing1.getId()));
+                    listvo.add(vo);
+                }
+            }
+            baseRsp.setData(listvo);
             baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
         }catch (Exception e){
@@ -152,21 +167,32 @@ public class  WarehousingController extends  BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectWarehousingListByNumStr",method = RequestMethod.POST)
-    public BaseRsp<List<Warehousing>> selectWarehousingListByNumStr(@RequestBody Warehousing warehousing){
-        BaseRsp<List<Warehousing>> baseRsp=new BaseRsp<List<Warehousing>>();
+    public BaseRsp<List<WarehousingVO>> selectWarehousingListByNumStr(@RequestBody WarehousingVO warehousingVO){
+        BaseRsp<List<WarehousingVO>> baseRsp=new BaseRsp<List<WarehousingVO>>();
         List<Warehousing> list =null;
-        if (null==warehousing.getNumstr()) {
+        List<WarehousingVO> listvo=new ArrayList<>();
+        if (null==warehousingVO.getNumstr()) {
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",Numstr 为空");
             return baseRsp;
         }
 
         try {
+            Warehousing warehousing=new Warehousing();
+            BeanUtils.copyProperties(warehousingVO,warehousing);
             warehousing.setFlag(1);
             list =warehousingService.selectWarehousingListBy(warehousing);
+            if (list.size()>0) {
+                for (Warehousing warehousing1 : list) {
+                    WarehousingVO vo=new WarehousingVO();
+                    BeanUtils.copyProperties(warehousing1,vo);
+                    vo.setId(String.valueOf(warehousing1.getId()));
+                    listvo.add(vo);
+                }
+            }
             baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
-            baseRsp.setData(list);
+            baseRsp.setData(listvo);
         }catch (Exception e){
             LOGGER.error("WarehousingController========>selectWarehousingListByNumStr失败", e);
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -180,15 +206,15 @@ public class  WarehousingController extends  BaseController {
     /**
      * 根据id查询
      * 详情页
-     * @param warehousing
+     * @param warehousingVO
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/selectWarehousing",method = RequestMethod.POST)
-    public BaseRsp<Warehousing> selectWarehousing(@RequestBody Warehousing warehousing){
-        BaseRsp<Warehousing> baseRsp =new BaseRsp<Warehousing>();
+    public BaseRsp<WarehousingVO> selectWarehousing(@RequestBody WarehousingVO warehousingVO){
+        BaseRsp<WarehousingVO> baseRsp =new BaseRsp<WarehousingVO>();
 
-        if(null==warehousing.getId()){
+        if(null==warehousingVO.getId()){
             LOGGER.error("WarehousingController========>selectWarehousing失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",selectWarehousing失败,id为空");
@@ -196,10 +222,19 @@ public class  WarehousingController extends  BaseController {
         }
         try {
             Warehousing rsp=new Warehousing();
+            WarehousingVO rspVO=new WarehousingVO();
+            Warehousing warehousing=new Warehousing();
+            BeanUtils.copyProperties(warehousingVO,warehousing);
+            warehousing.setId(Long.valueOf(warehousingVO.getId()));
             rsp=warehousingService .selectWarehousingListByPrimaryKey(warehousing);
+
+            if (null!=rsp){
+                BeanUtils.copyProperties(rsp,rspVO);
+                rspVO.setId(String.valueOf(rsp.getId()));
+            }
             baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
-            baseRsp.setData(rsp);
+            baseRsp.setData(rspVO);
         }catch (Exception e){
             LOGGER.error("WarehousingController========>selectWarehousing失败", e);
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -217,9 +252,9 @@ public class  WarehousingController extends  BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/updateWarehousing",method = RequestMethod.POST)
-    public BaseRsp updateWarehousing(@RequestBody Warehousing warehousing) {
+    public BaseRsp updateWarehousing(@RequestBody WarehousingVO warehousingVO) {
         BaseRsp baseRsp=new BaseRsp();
-        if (null==warehousing.getId()) {
+        if (null==warehousingVO.getId()) {
             LOGGER.error("WarehousingController========>updateWarehousing失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",updateWarehousing失败,id为空");
@@ -228,6 +263,9 @@ public class  WarehousingController extends  BaseController {
 
         int re;
         try {
+            Warehousing warehousing=new Warehousing();
+            BeanUtils.copyProperties(warehousingVO,warehousing);
+            warehousing.setId(Long.valueOf(warehousingVO.getId()));
             re = warehousingService.updateByPrimaryKey(warehousing);
             if (re>0){
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
@@ -248,14 +286,14 @@ public class  WarehousingController extends  BaseController {
 
     /**
      * 物理删除
-     * @param warehousing
+     * @param warehousingVO
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/deleteWarehousing",method = RequestMethod.POST)
-    public BaseRsp deleteWarehousing(@RequestBody Warehousing warehousing) {
+    public BaseRsp deleteWarehousing(@RequestBody WarehousingVO warehousingVO) {
         BaseRsp baseRsp=new BaseRsp();
-        if (null==warehousing.getId()) {
+        if (null==warehousingVO.getId()) {
             LOGGER.error("WarehousingController========>deleteWarehousing失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",deleteWarehousing失败,id为空");
@@ -265,11 +303,11 @@ public class  WarehousingController extends  BaseController {
         int re;
         int ree=0;
         try {
-            re=warehousingService.deleteByPrimaryKey(warehousing.getId());
+            re=warehousingService.deleteByPrimaryKey(Long.valueOf(warehousingVO.getId()));
             if (re>0){
                 //删除中间表的全部相关信息
                 Stylewar stylewar =new Stylewar();
-                stylewar.setWarehousingid(warehousing.getId());
+                stylewar.setWarehousingid(Long.valueOf(warehousingVO.getId()));
                  ree= stylewarService.deleteBy(stylewar);
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
                 baseRsp.setRespCode(BaseRspConstants.RSP_DESC_SUCCESS+",影响行数"+re+","+ree);

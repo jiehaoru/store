@@ -1,21 +1,19 @@
-package com.jhr.entity;
+package com.jhr.controller.vo;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 入库表
+ * 库存表
  */
-public class Warehousing implements Serializable {
-    private Long id;
+public class StockVO implements Serializable {
+    private String id;
 
     private String numstr; //自定义编号
 
-    private Long number; //数量
+    private Long innumber; //入库数量
 
-    private Date intotime; //入库时间
-
-    private Double radeprice; //批发价
+    private Long nownumber; //现库存数量
 
     private Integer flag; //状态
 
@@ -35,11 +33,11 @@ public class Warehousing implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -51,28 +49,20 @@ public class Warehousing implements Serializable {
         this.numstr = numstr == null ? null : numstr.trim();
     }
 
-    public Long getNumber() {
-        return number;
+    public Long getInnumber() {
+        return innumber;
     }
 
-    public void setNumber(Long number) {
-        this.number = number;
+    public void setInnumber(Long innumber) {
+        this.innumber = innumber;
     }
 
-    public Date getIntotime() {
-        return intotime;
+    public Long getNownumber() {
+        return nownumber;
     }
 
-    public void setIntotime(Date intotime) {
-        this.intotime = intotime;
-    }
-
-    public Double getRadeprice() {
-        return radeprice;
-    }
-
-    public void setRadeprice(Double radeprice) {
-        this.radeprice = radeprice;
+    public void setNownumber(Long nownumber) {
+        this.nownumber = nownumber;
     }
 
     public Integer getFlag() {
@@ -147,9 +137,8 @@ public class Warehousing implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", numstr=").append(numstr);
-        sb.append(", number=").append(number);
-        sb.append(", intotime=").append(intotime);
-        sb.append(", radeprice=").append(radeprice);
+        sb.append(", innumber=").append(innumber);
+        sb.append(", nownumber=").append(nownumber);
         sb.append(", flag=").append(flag);
         sb.append(", operator=").append(operator);
         sb.append(", createtime=").append(createtime);

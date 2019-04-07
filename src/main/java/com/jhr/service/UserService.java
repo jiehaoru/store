@@ -17,7 +17,7 @@ public interface UserService {
 
     boolean checkUserName(String username);
 
-    User login(String username, String password);
+    User login(User user);
 
 
     User selectByName(String username);

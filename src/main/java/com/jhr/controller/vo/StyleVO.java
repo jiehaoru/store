@@ -1,21 +1,31 @@
-package com.jhr.entity;
+package com.jhr.controller.vo;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 入库表
+ * 款式表
  */
-public class Warehousing implements Serializable {
-    private Long id;
+public class StyleVO implements Serializable {
+    private String id;
+
+    private Long styleid; //款号
+
+    private String stylename;  //款名
+
+    private String colour; //颜色
+
+    private String standard; //规格(SML)
+
+    private String size; //号型
+
+    private String material; //面料
 
     private String numstr; //自定义编号
 
-    private Long number; //数量
+    private Double price; //零售价
 
-    private Date intotime; //入库时间
-
-    private Double radeprice; //批发价
+    private String picture; //图片链接
 
     private Integer flag; //状态
 
@@ -35,12 +45,60 @@ public class Warehousing implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public Long getStyleid() {
+        return styleid;
+    }
+
+    public void setStyleid(Long styleid) {
+        this.styleid = styleid;
+    }
+
+    public String getStylename() {
+        return stylename;
+    }
+
+    public void setStylename(String stylename) {
+        this.stylename = stylename == null ? null : stylename.trim();
+    }
+
+    public String getColour() {
+        return colour;
+    }
+
+    public void setColour(String colour) {
+        this.colour = colour == null ? null : colour.trim();
+    }
+
+    public String getStandard() {
+        return standard;
+    }
+
+    public void setStandard(String standard) {
+        this.standard = standard == null ? null : standard.trim();
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size == null ? null : size.trim();
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material == null ? null : material.trim();
     }
 
     public String getNumstr() {
@@ -51,28 +109,20 @@ public class Warehousing implements Serializable {
         this.numstr = numstr == null ? null : numstr.trim();
     }
 
-    public Long getNumber() {
-        return number;
+    public Double getPrice() {
+        return price;
     }
 
-    public void setNumber(Long number) {
-        this.number = number;
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
-    public Date getIntotime() {
-        return intotime;
+    public String getPicture() {
+        return picture;
     }
 
-    public void setIntotime(Date intotime) {
-        this.intotime = intotime;
-    }
-
-    public Double getRadeprice() {
-        return radeprice;
-    }
-
-    public void setRadeprice(Double radeprice) {
-        this.radeprice = radeprice;
+    public void setPicture(String picture) {
+        this.picture = picture == null ? null : picture.trim();
     }
 
     public Integer getFlag() {
@@ -146,10 +196,15 @@ public class Warehousing implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", styleid=").append(styleid);
+        sb.append(", stylename=").append(stylename);
+        sb.append(", colour=").append(colour);
+        sb.append(", standard=").append(standard);
+        sb.append(", size=").append(size);
+        sb.append(", material=").append(material);
         sb.append(", numstr=").append(numstr);
-        sb.append(", number=").append(number);
-        sb.append(", intotime=").append(intotime);
-        sb.append(", radeprice=").append(radeprice);
+        sb.append(", price=").append(price);
+        sb.append(", picture=").append(picture);
         sb.append(", flag=").append(flag);
         sb.append(", operator=").append(operator);
         sb.append(", createtime=").append(createtime);
@@ -162,6 +217,7 @@ public class Warehousing implements Serializable {
         sb.append("]");
         return sb.toString();
     }
+
 
     // 操作框显示用
     public String xq="详情";
