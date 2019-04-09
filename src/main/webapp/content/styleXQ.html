@@ -8,6 +8,82 @@
     <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
     <link href="css/animate.css" rel="stylesheet">
     <link href="css/style.css?v=4.1.0" rel="stylesheet">
+	
+	<script src="js/jquery.min.js?v=2.1.4"></script>
+	<script type="text/javascript">
+		
+		Date.prototype.Format = function (fmt) {
+			var o = {
+				"M+": this.getMonth() + 1, //月份 
+				"d+": this.getDate(), //日 
+				"h+": this.getHours(), //小时 
+				"m+": this.getMinutes(), //分 
+				"s+": this.getSeconds(), //秒 
+				"q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+				"S": this.getMilliseconds() //毫秒 
+			};
+			if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+			for (var k in o)
+			if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+			return fmt;
+		};
+		
+		 $(document).ready(function (){
+			 var key = window.location.href.split("?")[1].split("=")[0];
+			var value = window.location.href.split("?")[1].split("=")[1];
+			 if(key==="id"){
+				var style={
+				id: value
+				}
+			}else{
+				var style={
+				numstr:value
+				}
+			}
+			console.log(style);
+			 
+			 $.ajax({
+            	//几个参数需要注意一下
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "http://localhost:8081/lecture/selectStyleBy" ,//url
+                data: JSON.stringify(style),
+				contentType: "application/json;charset=UTF-8",
+                success: function (rsp) {
+                   	console.log(rsp);
+					if(rsp.respCode==="0"){
+						console.log(rsp.data);
+					
+						$("#stylename").val(rsp.data.stylename);
+						$("#numstr").val(rsp.data.numstr);
+						$("#styleid").val(rsp.data.styleid);
+						$("#colour").val(rsp.data.colour);
+						$("#standard").val(rsp.data.standard);
+						$("#size").val(rsp.data.size);
+						$("#material").val(rsp.data.material);
+						$("#price").val(rsp.data.price);
+						$("#operator").val(rsp.data.operator);
+						$("#createtime").val(new Date(rsp.data.createtime).Format('yyyy-MM-dd hh:mm:ss'));
+						document.getElementById("picture").src="D:\\IdeaProjects\\store\\target\\store\\"+rsp.data.picture;
+						if(rsp.data.flag=="1"){
+						   	$("#flag").val("可用");
+						   }else{
+							 $("#flag").val("已删除");  
+						   }
+					}else{
+						alert(rsp.respDesc);
+					}
+					
+					
+				},
+				error:function(){
+					 window.location.href="500.html";
+				}
+            });
+			 
+			 
+		 });
+	</script>
 </head>
 
 <body>
@@ -16,81 +92,81 @@
             <div class="col-sm-6">
 					<div class="ibox float-e-margins">
 						<div class="ibox-title">
-							<h5>新增款式</h5>
+							<h5>款式详情</h5>
 						</div>
 						<div class="ibox-content">
 							<form class="form-horizontal m-t" id="commentForm">
 								<div class="form-group">
 									<label class="col-sm-3 control-label">款式名：</label>
 									<div class="col-sm-8">
-										<input id="cname" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true" readonly="true">
+										<input id="stylename" name="stylename" minlength="2" type="text" class="form-control" required="" aria-required="true" readonly="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">款号：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true" readonly="true">
+										<input id="styleid" name="styleid" minlength="2" type="text" class="form-control" required="" aria-required="true" readonly="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">款式内部编号：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true" readonly="true">
+										<input id="numstr" name="numstr" minlength="2" type="text" class="form-control" required="" aria-required="true" readonly="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">颜色：</label>
 									<div class="col-sm-8">
 							
-										<input type="color" value="#DC143C" readonly="true"/>
+										<input id="colour" name="colour" type="color" value="" readonly="true"/>
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">规格：</label>
 									<div class="col-sm-8">
-										<p>M </p>
+										<input id="standard" name="standard" class="form-control" readonly="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">号型：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" class="form-control" placeholder="例如：155/76A" readonly="true"/>
+										<input id="size" name="size" class="form-control" readonly="true"/>
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">面料：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" class="form-control" readonly="true">
+										<input id="material" name="material" class="form-control" readonly="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">零售价：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="1" type="text" class="form-control" required="" aria-required="true" readonly="true">
+										<input id="price" name="price" minlength="1" type="text" class="form-control" required="" aria-required="true" readonly="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">图片：</label>
 									<div class="col-sm-8">
-										<img src="/images/logo.png" width="258" height="39" />
+										<img id="picture" width="500" height="500"/>
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">状态：</label>
 									<div class="col-sm-8">
-										<p>可用</p>
+										<input id="flag" name="flag" minlength="1" type="text" class="form-control" required="" aria-required="true" readonly="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">创建人：</label>
 									<div class="col-sm-8">
-										<p>root</p>
+										<input id="operator" name="operator" minlength="1" type="text" class="form-control" required="" aria-required="true" readonly="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">创建时间：</label>
 									<div class="col-sm-8">
-										<p></p>
+										<input id="createtime" name="createtime"  type="text" class="form-control" required="" aria-required="true"  readonly="true">
 									</div>
 								</div>
 								

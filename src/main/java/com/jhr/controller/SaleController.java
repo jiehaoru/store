@@ -65,6 +65,7 @@ public class SaleController extends BaseController {
             if (null != ss) {
                 Style style = new Style();
                 style.setNumstr(ss);
+                style.setFlag(1);//有效的
                 styles = styleService.selectStyleBy(style);
                 if (styles.size() == 0) { //没有这个款式
                     baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -332,7 +333,7 @@ public class SaleController extends BaseController {
                 stylesal.setSaleid(Long.valueOf(saleVO.getId()));
                 ree = stylesalService.deleteBy(stylesal);
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
-                baseRsp.setRespCode(BaseRspConstants.RSP_DESC_SUCCESS + ",影响行数" + re + "," + ree);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS + ",影响行数" + re + "," + ree);
             } else {
                 baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR + ",影响行数" + re + "," + ree);

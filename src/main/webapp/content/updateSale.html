@@ -8,6 +8,7 @@
     <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
     <link href="css/animate.css" rel="stylesheet">
     <link href="css/style.css?v=4.1.0" rel="stylesheet">
+	<script src="js/jquery.min.js?v=2.1.4"></script>
 </head>
 
 <body>
@@ -19,56 +20,43 @@
 							<h5>编辑出售信息</h5>
 						</div>
 						<div class="ibox-content">
-							<form class="form-horizontal m-t" id="commentForm">
+							<form class="form-horizontal m-t" id="commentForm" onSubmit="return uploadForm();">
 								<div class="form-group">
 									<label class="col-sm-3 control-label">款式内部编号：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">
+										<input id="numstr" name="numstr" minlength="2" type="text" class="form-control" required="" aria-required="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">出售价格：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">
+										<input id="salepri" name="salepri" minlength="1" type="text" class="form-control" required="number" aria-required="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">出售数量：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">
+										<input id="salenum" name="salenum" minlength="1" type="text" class="form-control" required="number" aria-required="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">出售时间：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">
+										<input id="saledate" name="saledate" minlength="1" type="date" required>
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="col-sm-3 control-label">创建人：</label>
+									<label class="col-sm-3 control-label">注意：</label>
 									<div class="col-sm-8">
-										<label class="col-sm-3 control-label">以当前登录人为准,自动生成</label>
+										<label style="color: #F70C10">如有更改
+											<span style="font-size: 25px">数量</span>,成功后请前往
+											<span style="font-size: 25px">"现库存"</span>页面手动更改相关数据</label>
 									</div>
 								</div>
-								
-							
-								
-                       
-        
-        
-    								
-								
-<!--
-								<div class="form-group">
-									<label class="col-sm-3 control-label">说明：</label>
-									<div class="col-sm-8">
-										<textarea id="ccomment" name="comment" class="form-control" required="" aria-required="true"></textarea>
-									</div>
-								</div>
--->
+
 								<div class="form-group">
 									<div class="col-sm-4 col-sm-offset-3">
-										<button class="btn btn-primary" type="submit">提交</button>
+										<button class="btn btn-primary" type="submmit">提交</button>
 										<button class="btn btn-primary" type="button" onclick="javascript:history.back(-1);">返回</button>
 									</div>
 								</div>
@@ -80,5 +68,113 @@
             </div>
 		</div>	
 	</div>
+	
+	<script>
+		//页面回显
+		 $(document).ready(function (){
+			 var key = window.location.href.split("?")[1].split("=")[0];
+			var value = window.location.href.split("?")[1].split("=")[1];
+			 if(key==="id"){
+				var saleVO={
+				id: value
+				}
+			}else{
+				var saleVO={
+				numstr:value
+				}
+			}
+			console.log(saleVO);
+			 
+			 $.ajax({
+            	//几个参数需要注意一下
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "http://localhost:8081/lecture/selectSale" ,//url
+                data: JSON.stringify(saleVO),
+				contentType: "application/json;charset=UTF-8",
+                success: function (rsp) {
+                   	console.log(rsp);
+					if(rsp.respCode==="0"){
+						console.log(rsp.data);
+					
+						$("#numstr").val(rsp.data.numstr);
+						$("#salepri").val(rsp.data.salepri);
+						$("#salenum").val(rsp.data.salenum);
+						//时间戳转换
+						var newDate=new Date(rsp.data.saledate).Format('yyyy-MM-dd');
+						console.log(newDate);
+						$("#saledate").val(newDate);
+					}else{
+						alert(rsp.respDesc);
+					}
+					
+					
+				},
+				error:function(){
+					 window.location.href="500.html";
+				}
+            });
+			 
+			 
+		 });
+		
+		//date 数据回显
+		Date.prototype.Format = function (fmt) {
+			var o = {
+				"M+": this.getMonth() + 1, //月份 
+				"d+": this.getDate(), //日 
+				"h+": this.getHours(), //小时 
+				"m+": this.getMinutes(), //分 
+				"s+": this.getSeconds(), //秒 
+				"q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+				"S": this.getMilliseconds() //毫秒 
+			};
+			if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+			for (var k in o)
+			if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+			return fmt;
+		};
+		
+		
+		//form 提交
+		function uploadForm(){
+			var id = window.location.href.split("?")[1].split("=")[1];
+			console.log(id);
+			var saleVO={
+				id:id,
+				numstr:$("#numstr").val(),
+				salepri:$("#salepri").val(),
+				salenum:$("#salenum").val(),
+				saledate:$("#saledate").val()
+			};
+			console.log(saleVO);
+			$.ajax({
+            //几个参数需要注意一下
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "http://localhost:8081/lecture/updateSale" ,//url
+                data: JSON.stringify(saleVO),
+				contentType: "application/json;charset=UTF-8",
+                success: function (rsp) {
+                   	console.log(rsp);
+					if(rsp.respCode==="0"){
+						alert("修改成功");
+						window.location.href="tableCS.html";
+						
+					}else{
+						alert("修改失败");
+						
+					}
+					
+					
+				},
+				error:function(){
+					 window.location.href="500.html";
+					
+				}
+            });
+			return false;
+		}
+	</script>
 </body>
 </html>

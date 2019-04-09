@@ -19,8 +19,47 @@
     <script>
         if (window.top !== window.self) {
             window.top.location = window.location;
-        }
+        };
     </script>
+	<script src="js/jquery.min.js?v=2.1.4"></script>
+	<script type="text/javascript">
+		function login_test(){
+//			var form = new FormData();
+//  				form.append("username",$("#username").val());
+//  				form.append("password",$("#password").val());
+//				form.append("filed1",$("#filed1").val());
+			 if($("#username").val().replace(/(^\s*)|(\s*$)/g, '')===''){
+					alert("用户名不能为空");
+				 	return false;
+				}
+			 if($("#pwd").val().replace(/(^\s*)|(\s*$)/g, '')===''){
+					alert("密码不能为空");
+				 	return false;
+				}
+			var form=
+				{
+				username:$("#username").val(),
+				password:$("#pwd").val()
+				};
+			 console.log(form);
+		
+　			$.ajax({
+                url:"http://localhost:8081/lecture/login",
+                type:"post",
+				contentType: "application/json;charset=UTF-8",
+                data:JSON.stringify(form),
+				dataType: "json",
+                success:function(data){
+					console.log(data);
+                  if(data===0){
+					 window.location.href="index.html"; 
+					}else{
+						alert("用户名或密码错误"); 
+					}
+                }
+			});
+		};
+	</script>
 
 </head>
 
@@ -28,19 +67,17 @@
     <div class="signinpanel">
         <div class="row">
             <div class="col-sm-12">
-                <form method="post" action="index.html">
                     <h4 class="no-margins">登录：</h4>
-                    <p class="m-t-md">登录到H+后台主题UI框架</p>
-                    <input type="text" class="form-control uname" placeholder="用户名" />
-                    <input type="password" class="form-control pword m-b" placeholder="密码" />
-                    <a href="">忘记密码了？</a>
-                    <button class="btn btn-success btn-block">登录</button>
-                </form>
+                    <p class="m-t-md">潮品店库存数据服务平台</p>
+                    <input id="username" type="text" class="form-control uname" placeholder="用户名" />
+                    <input id="pwd" type="password" class="form-control pword m-b" placeholder="密码" />
+                    <a href="register.html">注册账户</a>
+                    <button onclick="login_test();" class="btn btn-success btn-block">登录</button>
             </div>
         </div>
         <div class="signup-footer">
             <div class="pull-left">
-                &copy; hAdmin
+                &copy; JHR
             </div>
         </div>
     </div>
