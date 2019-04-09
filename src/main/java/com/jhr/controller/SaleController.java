@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,8 +55,18 @@ public class SaleController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/insertSale", method = RequestMethod.POST)
-    public BaseRsp insertSale(@RequestBody SaleVO saleVO) {
+    public BaseRsp insertSale(@RequestBody SaleVO saleVO,HttpSession session) {
         BaseRsp baseRsp = new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         Stock stock=new Stock();//修改库存
         try {
             List<Style> styles = new ArrayList<Style>();
@@ -104,6 +115,7 @@ public class SaleController extends BaseController {
             sale.setId(Sequence.getInstance().nextId());
             sale.setFlag(1);//1 有效
             sale.setCreatetime(new Date());
+            sale.setOperator(super.isLogin(session).getUsername());
             int i = saleService.insertSale(sale);
             int ii = 0;
             if (i > 0) {
@@ -274,8 +286,18 @@ public class SaleController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/updateSale", method = RequestMethod.POST)
-    public BaseRsp updateSale(@RequestBody SaleVO saleVO) {
+    public BaseRsp updateSale(@RequestBody SaleVO saleVO,HttpSession session) {
         BaseRsp baseRsp = new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         if (null == saleVO.getId()) {
             LOGGER.error("SaleController========>updateSale失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -314,8 +336,18 @@ public class SaleController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/deleteSale", method = RequestMethod.POST)
-    public BaseRsp deleteSale(@RequestBody SaleVO saleVO) {
+    public BaseRsp deleteSale(@RequestBody SaleVO saleVO,HttpSession session) {
         BaseRsp baseRsp = new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         if (null == saleVO.getId()) {
             LOGGER.error("SaleController========>deleteSale失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);

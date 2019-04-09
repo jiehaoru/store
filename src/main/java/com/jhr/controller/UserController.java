@@ -26,7 +26,7 @@ import java.util.Date;
  */
 @Controller
 @RequestMapping("/lecture")
-public class UserController {
+public class UserController extends BaseController {
     @Autowired
     UserService userService;
 
@@ -45,6 +45,7 @@ public class UserController {
             user.setId(Sequence.getInstance().nextId());
             user.setFlag(1);
             user.setCreatetime(new Date());
+            user.setAuthorityid(1);//普通权限
             boolean register = userService.register(user);
             if (register){
                 return "0";
@@ -61,27 +62,16 @@ public class UserController {
     //登录
     @ResponseBody
     @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public String login(@RequestBody User user) {
+    public String login(@RequestBody User user,HttpSession session) {
 
         //如何对密码加密？ MD5算法
 
         User user1 = userService.login(user);
-        System.out.println("123");
         //判断用户是否登录成功 user是否是null
         if (user1 != null) {
             //登录成功
-            // 判断用户是否勾选了自动登录
-//            String autoLogin = request.getParameter("autoLogin");
-//            if("true".equals(autoLogin)){
-//                //需要自动登录，使用cookie
-//                Cookie cookie_username = new Cookie("cookie_username", user.getUsername());
-//                Cookie cookie_password = new Cookie("cookie_password", user.getPassword());
-//                cookie_password.setMaxAge(10*60);
-//
-//                response.addCookie(cookie_username);
-//                response.addCookie(cookie_password);
-//            }
-//            session.setAttribute("user", user);
+            // session 存登录人
+            super.setLogin(session,user1);
             return "0";
         } else {
 //            request.setAttribute("loginError", "用户名或密码错误");

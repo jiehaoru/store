@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,8 +54,18 @@ public class RefactoryController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/insertRefac",method = RequestMethod.POST)
-    public BaseRsp insertRefac(@RequestBody RefactoryVO refactoryVO){
+    public BaseRsp insertRefac(@RequestBody RefactoryVO refactoryVO,HttpSession session){
         BaseRsp baseRsp=new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         Stock stock=new Stock();//修改库存
         try {
             List<Style> styles=new ArrayList<Style>();
@@ -102,6 +113,7 @@ public class RefactoryController extends BaseController {
             refactory.setId(Sequence.getInstance().nextId());
             refactory.setFlag(1);//1 有效
             refactory.setCreatetime(new Date());
+            refactory.setOperator(super.isLogin(session).getUsername());
             int i = refactoryService.insertRefactory(refactory);
             int ii=0;
             if (i>0){
@@ -263,8 +275,18 @@ public class RefactoryController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/updateRefactory",method = RequestMethod.POST)
-    public BaseRsp updateRefactory(@RequestBody RefactoryVO refactoryVO) {
+    public BaseRsp updateRefactory(@RequestBody RefactoryVO refactoryVO,HttpSession session) {
         BaseRsp baseRsp=new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         if (null==refactoryVO.getId()) {
             LOGGER.error("RefactoryController========>updateRefactory失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -302,8 +324,18 @@ public class RefactoryController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/deleteRefactory",method = RequestMethod.POST)
-    public BaseRsp deleteRefactory(@RequestBody RefactoryVO refactoryVO) {
+    public BaseRsp deleteRefactory(@RequestBody RefactoryVO refactoryVO,HttpSession session) {
         BaseRsp baseRsp=new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         if (null==refactoryVO.getId()) {
             LOGGER.error("RefactoryController========>deleteRefactory失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);

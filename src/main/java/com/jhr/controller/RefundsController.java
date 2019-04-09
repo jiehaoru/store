@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,8 +53,18 @@ public class RefundsController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/insertRefunds",method = RequestMethod.POST)
-    public BaseRsp insertRefunds(@RequestBody RefundsVO refundsVO){
+    public BaseRsp insertRefunds(@RequestBody RefundsVO refundsVO,HttpSession session){
         BaseRsp baseRsp=new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         try {
             List<Style> styles=new ArrayList<Style>();
             Stock stock=new Stock();//修改库存
@@ -116,6 +127,7 @@ public class RefundsController extends BaseController {
             refunds.setId(Sequence.getInstance().nextId());
             refunds.setFlag(1);//1 有效
             refunds.setCreatetime(new Date());
+            refunds.setOperator(super.isLogin(session).getUsername());
             int i = refundsService.insertRefunds(refunds);
             int ii=0;
             if (i>0){
@@ -280,8 +292,18 @@ public class RefundsController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/updateRefunds",method = RequestMethod.POST)
-    public BaseRsp updateRefunds(@RequestBody RefundsVO refundsVO) {
+    public BaseRsp updateRefunds(@RequestBody RefundsVO refundsVO,HttpSession session) {
         BaseRsp baseRsp=new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         if (null==refundsVO.getId()) {
             LOGGER.error("RefundsController========>updateRefunds失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -319,8 +341,18 @@ public class RefundsController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/deleteRefunds",method = RequestMethod.POST)
-    public BaseRsp deleteRefunds(@RequestBody RefundsVO refundsVO) {
+    public BaseRsp deleteRefunds(@RequestBody RefundsVO refundsVO,HttpSession session) {
         BaseRsp baseRsp=new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         if (null==refundsVO.getId()) {
             LOGGER.error("RefundsController========>deleteRefunds失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
