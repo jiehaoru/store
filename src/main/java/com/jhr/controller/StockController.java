@@ -61,6 +61,7 @@ public class StockController extends BaseController {
             if (null!=ss) {
                 Style style=new Style();
                 style.setNumstr(ss);
+                style.setFlag(1);//有效的
                 styles = styleService.selectStyleBy(style);
                 if (styles.size()==0) { //没有这个款式
                     baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);

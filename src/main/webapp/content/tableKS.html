@@ -49,14 +49,14 @@
 					</div>
 -->
 					<div class="ibox-content">
-						<form method="post" class="form-horizontal" action="">
+						<form id="form1" method="post" class="form-horizontal" onsubmit="return false" action="##">
 							<div class="form-group">
                                 <label class="col-sm-2 control-label">款名查询框:</label>
 
                                 <div class="col-sm-10">
                                     <div class="input-group">
-                                        <input type="text" placeholder="请输款名" class="form-control"> <span class="input-group-btn">
-										<button type="submit" class="btn btn-primary">搜索
+                                        <input name="stylename" id="stylename" type="text" placeholder="请输款名" class="form-control" > <span class="input-group-btn">
+										<button type="button" class="btn btn-primary" onclick="selectObj()">搜索
                                         </button> </span>
                                     </div>
                                 </div>
@@ -123,79 +123,160 @@
     <!-- 自定义js -->
     <script src="js/content.js?v=1.0.0"></script>
 
+
     <!-- Page-Level Scripts -->
     <script>
-        $(document).ready(function () {
-
-            $.jgrid.defaults.styleUI = 'Bootstrap';
-            // Examle data for jqGrid
-
-            $.post(
-                URL : "http://localhost:8081/lecture/selectStyleListByFlag",
-
-
-            );
-            $.ajax({
-                url: "http://localhost:8081/lecture/selectStyleListByFlag",
-                type: "GET",
-                dataType: "json",
-                success:function(res){
-                    // if(json.code == '1'){
-                    //     //成功
-                    // }else{
-                    //     //出错
-                    //     obj.html('操作按钮').attr('has-click','0');
-                    // }
-                    console.log(res);
-                },
-                error:function () {
-
-                }
+		
+		
+		function selectObj() {
+			var stylename = $("#stylename").val();
+			var styleVO={
+				stylename:stylename
+			};
+            $("#table_list_1").jqGrid('setGridParam',{ 
+                url:"http://localhost:8081/lecture/selectStyleByName", 
+				datatype: "JSON",
+				mtype:"POST",
+				ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+                postData:JSON.stringify(styleVO), //发送数据 
+				jsonReader : {
+					root:"data"//从json数据中的data里读取集合,默认rows
+				},
+            }).trigger("reloadGrid"); //重新载入 
+		};
+		
+		//删除超链接
+		function sc(cellValue, options, rowdata, action)
+    {
+        return "<a href='javascript:deleLink(\""+rowdata.id+"\");'>"+rowdata.sc+"</a>";
+    };
+		
+		function deleLink(id)
+    {
+		if (confirm("数据即将删除，确定继续吗？")){
+			var style={
+				id:id,
+				flag:0
+			};
+			console.log(style);
+			$.ajax({
+            //几个参数需要注意一下
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "http://localhost:8081/lecture/updateStyle" ,//url
+                data: JSON.stringify(style),
+				contentType: "application/json;charset=UTF-8",
+                success: function (rsp) {
+                   	console.log(rsp);
+					if(rsp.respCode==="0"){
+						alert("删除成功");
+						window.location.href="tableKS.html";
+						
+					}else{
+						alert("删除失败");
+						
+					}
+					
+					
+				},
+				error:function(){
+					 window.location.href="500.html";
+					
+				}
             });
-            var mydata = [
-                {
-                    id: "1",
-                    styleID: "3120604841",
-                    styleName: "绣花长袖中羽绒服",
-                    standard: "M",
-                    price: "530.00",
-					flag:"可用",
-                    operator: "root",
-					createtime: "2007-09-01",
-					xq:"详情",
-					bj: "编辑",
-					sc: "删除"
-                }
+			return false;
+		}
+    };
+		
+        $(document).ready(function () {
+//			
+			var mydata = [
+//                {
+//                    id: "1",
+//                    styleID: "3120604841",
+//                    styleName: "绣花长袖中羽绒服",
+//                    standard: "M",
+//                    price: "530.00",
+//					flag:"可用",
+//                    operator: "root",
+//					createtime: "2007-09-01",
+//					xq:"详情",
+//					bj: "编辑",
+//					sc: "删除"
+//                }
             ];
+			Date.prototype.Format = function (fmt) {
+			var o = {
+				"M+": this.getMonth() + 1, //月份 
+				"d+": this.getDate(), //日 
+				"h+": this.getHours(), //小时 
+				"m+": this.getMinutes(), //分 
+				"s+": this.getSeconds(), //秒 
+				"q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+				"S": this.getMilliseconds() //毫秒 
+			};
+			if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+			for (var k in o)
+			if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+			return fmt;
+		};
 
+			$.ajax({
+    			url: "http://localhost:8081/lecture/selectStyleListByFlag",
+    			type: "GET",
+    			timeout: 5000,
+    			async: true,
+    			data: null,
+    			dataType: "json",
+    			error: function(XMLHttpRequest, textStatus, errorThrown) {
+    				
+    			},
+    			success: function(rsp, textStatus) {
+					console.log(rsp.data[0].id);
+					this.mydata=rsp.data;
+					console.log(this.mydata);
+					var obj = eval(this.mydata);
+
+					
+			$.jgrid.defaults.styleUI = 'Bootstrap';
+            // Examle data for jqGrid
             // Configuration for jqGrid Example 1
             $("#table_list_1").jqGrid({
-                data: mydata,
+                data: this.mydata,
                 datatype: "local",
+				mtype:"GET",
                 height: 250,
                 autowidth: true,
                 shrinkToFit: true,
                 rowNum: 10,
                 rowList: [10, 20, 30],
-                colNames: ['序号','款号' , '款名', '规格', '零售价','状态','操作人','创建时间','','',''],
+                colNames: ['序号','款号' ,'款式内部编号' ,'款名', '规格', '零售价','操作人','创建时间','','',''],
                 colModel: [
                     {
+						
                         name: 'id',
                         index: 'id',
-                        width: 60,
+                        width: 70,
 						align: "center",
-                        sorttype: "int"
+//                        sorttype: "Long"
                     },
                     {
-                        name: 'styleID',
-                        index: 'styleID',
+                        name: 'styleid',
+                        index: 'styleid',
                         width: 60,
 						align: "center",
-                        sorttype: "int"
+//                        sorttype: "int"
+                    },
+					{
+                        name: 'numstr',
+                        index: 'numstr',
+                        width: 70,
+						align: "center",
+//                        sorttype: "int"
                     },
                     {
-                        name: 'styleName',
-                        index: 'styleName',
+                        name: 'stylename',
+                        index: 'stylename',
 						align: "center",
                         width: 100
                     },
@@ -210,53 +291,54 @@
                         index: 'price',
                         width: 60,
                         align: "center",
-                        sorttype: "float",
+//                        sorttype: "float",
                         formatter: "number"
-                    },
-					{
-                        name: 'flag',
-                        index: 'flag',
-                        width: 60,
-                        align: "center",
-                       
                     },
                     {
                         name: 'operator',
                         index: 'operator',
 						align: "center",
-                        width: 60
+                        width: 50
                         
                     },
                     {
-						 name: 'createtime',
+						name: 'createtime',
                         index: 'createtime',
 						align: "center",
-                        width: 60,
+                        width: 65,
                         sorttype: "date",
-                        formatter: "date"
+						formatter:function(value,options,row){ 
+							return new Date(value).Format('yyyy-MM-dd hh:mm:ss');}
+					
                     },
 					{
                         name: 'xq',
+						index:'xq',
                         formatter:'showlink', 
-						formatoptions:{baseLinkUrl:'styleXQ.html', addParam: '&action=edit'},
+						formatoptions:{baseLinkUrl:'styleXQ.html'},
+//						formatter:xqLink,
 						align: "center",
-                        width: 15
+                        width: 20
                         
                     },
 					{
                         name: 'bj',
+						index:'bj',
                         formatter:'showlink', 
-						formatoptions:{baseLinkUrl:'updateStyle.html', addParam: '&action=edit'},
+						formatoptions:{baseLinkUrl:'updateStyle.html'},
+//						formatter:bjLink,
 						align: "center",
-                        width: 15
+                        width: 20
                         
                     },
 					{
                         name: 'sc',
+						index:'sc',
                         formatter:'showlink', 
-						formatoptions:{baseLinkUrl:'', addParam: '&action=edit'},
+//						formatoptions:{baseLinkUrl:'http://localhost:8081/lecture/deleteByPrimaryKey'},
+						formatter:sc,
 						align: "center",
-                        width: 15
+                        width: 20
                         
                     }
                 ],
@@ -265,8 +347,13 @@
                 caption: "款式列表",
                 hidegrid: false
             });
-
-       
+					
+			
+					
+    			}//success
+				
+    		});
+				
 
             // Add responsive to jqGrid
             $(window).bind('resize', function () {

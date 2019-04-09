@@ -7,13 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <title> 返厂</title>
+    <title> 返厂页面</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
 
-    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico"> 
+	<link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
     <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
-
+	<link href="css/plugins/iCheck/custom.css" rel="stylesheet">
     <!-- jqgrid-->
     <link href="css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
 
@@ -31,7 +32,7 @@
 </head>
 
 <body class="gray-bg">
-<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-sm-12">
 				<div class="ibox float-e-margins">
@@ -48,14 +49,14 @@
 					</div>
 -->
 					<div class="ibox-content">
-						<form method="post" class="form-horizontal" action="">
+						<form id="form1" method="post" class="form-horizontal" onsubmit="return false" action="##">
 							<div class="form-group">
-                                <label class="col-sm-2 control-label">款名查询框:</label>
+                                <label class="col-sm-2 control-label">内部编号查询框:</label>
 
                                 <div class="col-sm-10">
                                     <div class="input-group">
-                                        <input type="text" placeholder="请输款名" class="form-control"> <span class="input-group-btn">
-										<button type="submit" class="btn btn-primary">搜索
+                                        <input name="numstr" id="numstr" type="text" placeholder="请输入内部编号" class="form-control" > <span class="input-group-btn">
+										<button type="button" class="btn btn-primary" onclick="selectObj()">搜索
                                         </button> </span>
                                     </div>
                                 </div>
@@ -66,7 +67,6 @@
 			</div>
 		</div>
 	</div>
-	
 		
     <div class="wrapper wrapper-content  animated fadeInRight">
         <div class="row">
@@ -82,7 +82,7 @@
 					<div class="col-md-12">
     					<div class="form-group">
         					<div class="col-sm-12 col-sm-offset-3">
-           						<button type="button" class="btn btn-w-m btn-success" onclick="location='addstyle.html'">新增</button>
+           						<button type="button" class="btn btn-w-m btn-success" onclick="location='addRefactory.html'">新增</button>
        						 </div>
     					</div>
 					</div>
@@ -123,51 +123,171 @@
     <!-- 自定义js -->
     <script src="js/content.js?v=1.0.0"></script>
 
+
     <!-- Page-Level Scripts -->
     <script>
+		
+		
+		function selectObj() {
+			var numstr = escape($("#numstr").val());
+			var refactory={
+				numstr:numstr
+			};
+            $("#table_list_1").jqGrid('setGridParam',{ 
+                url:"http://localhost:8081/lecture/selectRefactoryListByNumStr", 
+				datatype: "JSON",
+				mtype:"POST",
+				ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+                postData:JSON.stringify(refactory), //发送数据 
+				jsonReader : {
+					root:"data"//从json数据中的data里读取集合,默认rows
+				},
+            }).trigger("reloadGrid"); //重新载入 
+		};
+		
+		//内部款号的超链接拼接
+		function editLink(cellValue, options, rowdata, action)
+    {
+        return "<a href='styleXQ.html?numstr="+rowdata.numstr+"'>"+rowdata.numstr+"</a>";
+    };
+		
+		
+		
+		//删除超链接
+		function sc(cellValue, options, rowdata, action)
+    {
+        return "<a href='javascript:deleLink(\""+rowdata.id+"\");'>"+rowdata.sc+"</a>";
+    };
+		
+		function deleLink(id)
+    {
+		if (confirm("数据即将删除，确定继续吗？"))
+		{
+			var refactoryVO={
+				id:id
+			};
+			console.log(refactoryVO);
+			$.ajax({
+            //几个参数需要注意一下
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "http://localhost:8081/lecture/deleteRefactory" ,//url
+                data: JSON.stringify(refactoryVO),
+				contentType: "application/json;charset=UTF-8",
+                success: function (rsp) {
+                   	console.log(rsp);
+					if(rsp.respCode==="0"){
+						alert("删除成功");
+						window.location.href="tableFC.html";
+						
+					}else{
+						alert("删除失败");
+						
+					}
+					
+					
+				},
+				error:function(){
+					 window.location.href="500.html";
+					
+				}
+            });
+			return false;
+		}
+    };
+		
         $(document).ready(function () {
-
-            $.jgrid.defaults.styleUI = 'Bootstrap';
-            // Examle data for jqGrid
-            var mydata = [
-               {
-                    id: "1",
-                    numstr: "3120604841#999",
-                    refnum: "10",
-                    refpri: "999.0",
-					refdate:"2007-09-01",
-                    operator: "root",
-					createtime: "2007-09-01",
-					bj: "编辑",
-					sc: "删除"
-                }
+//			
+			var mydata = [
+//                {
+//                    id: "1",
+//                    styleID: "3120604841",
+//                    styleName: "绣花长袖中羽绒服",
+//                    standard: "M",
+//                    price: "530.00",
+//					flag:"可用",
+//                    operator: "root",
+//					createtime: "2007-09-01",
+//					xq:"详情",
+//					bj: "编辑",
+//					sc: "删除"
+//                }
             ];
+			Date.prototype.Format = function (fmt) {
+			var o = {
+				"M+": this.getMonth() + 1, //月份 
+				"d+": this.getDate(), //日 
+				"h+": this.getHours(), //小时 
+				"m+": this.getMinutes(), //分 
+				"s+": this.getSeconds(), //秒 
+				"q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+				"S": this.getMilliseconds() //毫秒 
+			};
+			if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+			for (var k in o)
+			if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+			return fmt;
+		};
 
+			$.ajax({
+    			url: "http://localhost:8081/lecture/selectRefactoryListByFlag",
+    			type: "GET",
+    			timeout: 5000,
+    			async: true,
+    			data: null,
+    			dataType: "json",
+    			error: function(XMLHttpRequest, textStatus, errorThrown) {
+    				
+    			},
+    			success: function(rsp, textStatus) {
+					console.log(rsp.data[0].id);
+					this.mydata=rsp.data;
+					console.log(this.mydata);
+					var obj = eval(this.mydata);
+//					for(var i=0;i<this.mydata.length;i++){
+//						var mydata = [
+//						{
+//							id: this.mydata[i].id,
+//							styleID: this.mydata[i].styleid,
+//							styleName: this.mydata[i].stylename,
+//							standard: this.mydata[i].standard,
+//							price: this.mydata[i].price,
+//							flag:this.mydata[i].flag,
+//							operator: this.mydata[i].operator,
+//							createtime: this.mydata[i].createtime,
+//							xq:"详情",
+//							bj: "编辑",
+//							sc: "删除"
+//						}
+//					];
+//					};
+					
+			$.jgrid.defaults.styleUI = 'Bootstrap';
+            // Examle data for jqGrid
             // Configuration for jqGrid Example 1
             $("#table_list_1").jqGrid({
-                data: mydata,
+                data: this.mydata,
                 datatype: "local",
+				mtype:"GET",
                 height: 250,
                 autowidth: true,
                 shrinkToFit: true,
                 rowNum: 10,
                 rowList: [10, 20, 30],
-                colNames: ['序号', '款式内部编号', '返厂价格', '返厂数量', '返厂时间', '操作人', '创建时间','',''],
+               	colNames: ['序号', '款式内部编号', '返厂价格', '返厂数量', '返厂时间', '操作人', '创建时间','',''],
                 colModel: [
                    {
                         name: 'id',
                         index: 'id',
                         width: 60,
-						align: "center",
-                        sorttype: "int"
+						align: "center"
                     },
                     {
                         name: 'numstr',
                         index: 'numstr',
-						formatter:'showlink', 
-						formatoptions:{baseLinkUrl:'', addParam: '&action=edit'},
+						formatter: editLink, 
                         width: 60,
-						align: "center",
+						align: "center"
                     },
                     
                     {
@@ -192,12 +312,13 @@
                         width: 80,
                         align: "center",
                         sorttype: "date",
-                        formatter: "date"
+                       formatter:function(value,options,row){ 
+							return new Date(value).Format('yyyy-MM-dd hh:mm:ss');}
                     },
                     {
                         name: 'operator',
                         index: 'operator',
-                        width: 80,
+                        width: 50,
                         align: "center"
                         
                     },
@@ -207,22 +328,27 @@
                         width: 80,
                         align: "center",
                         sorttype: "date",
-                        formatter: "date"
+                        formatter:function(value,options,row){ 
+							return new Date(value).Format('yyyy-MM-dd hh:mm:ss');}
                     },
 					{
                         name: 'bj',
+						index:'bj',
                         formatter:'showlink', 
-						formatoptions:{baseLinkUrl:'updateWarehousing.html', addParam: '&action=edit'},
+						formatoptions:{baseLinkUrl:'updateRefactory.html'},
+//						formatter:bjLink,
 						align: "center",
-                        width: 15
+                        width: 20
                         
                     },
 					{
                         name: 'sc',
+						index:'sc',
                         formatter:'showlink', 
-						formatoptions:{baseLinkUrl:'', addParam: '&action=edit'},
+//						formatoptions:{baseLinkUrl:'http://localhost:8081/lecture/deleteByPrimaryKey'},
+						formatter:sc,
 						align: "center",
-                        width: 15
+                        width: 20
                         
                     }
                 ],
@@ -231,8 +357,19 @@
                 caption: "数据",
                 hidegrid: false
             });
-
-       
+					
+//				function xqLink(cellvalue, options, rowObject){
+//						return "<a href = 'styleXQ.html?id="  +  rowObject['id']+"'>" + cellvalue + "</a>";
+//						};
+//				function bjLink(cellvalue, options, rowObject){
+//						return "<a href = 'updateStyle.html?id="  +  rowObject['id']+"'>" + cellvalue + "</a>";
+//						}
+			
+					
+    			}//success
+				
+    		});
+				
 
             // Add responsive to jqGrid
             $(window).bind('resize', function () {

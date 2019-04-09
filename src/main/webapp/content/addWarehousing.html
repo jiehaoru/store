@@ -8,9 +8,52 @@
     <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
     <link href="css/animate.css" rel="stylesheet">
     <link href="css/style.css?v=4.1.0" rel="stylesheet">
+
+	<script src="js/jquery.min.js?v=2.1.4"></script>
+	<script src="js/jquery-ui-1.10.4.min.js"></script>
+	<script language="javascript" type="text/javascript" src="My97DatePicker/WdatePicker.js"></script>
+	
+	
+	<script>
+		//form 提交
+		function uploadForm(){
+			var warehousingVO={
+				numstr:$("#numstr").val(),
+				number:$("#number").val(),
+				radeprice:$("#radeprice").val(),
+				intotime:$("#intotime").val()
+			};
+			console.log(warehousingVO);
+			$.ajax({
+            //几个参数需要注意一下
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "http://localhost:8081/lecture/insertWare" ,//url
+                data: JSON.stringify(warehousingVO),
+				contentType: "application/json;charset=UTF-8",
+                success: function (rsp) {
+                   	console.log(rsp);
+					if(rsp.respCode==="0"){
+						alert("添加成功");
+						window.location.href="tableRK.html";
+					}else{
+						alert(rsp.respDesc);
+					}
+					
+					
+				},
+				error:function(){
+					 window.location.href="500.html";
+				}
+            });
+			return false;
+		}
+	</script>
+
 </head>
 
 <body>
+	
 	<div class="wrapper wrapper-content animated fadeInRight">
 		<div class="row">
             <div class="col-sm-6">
@@ -19,35 +62,36 @@
 							<h5>添加入库信息</h5>
 						</div>
 						<div class="ibox-content">
-							<form class="form-horizontal m-t" id="commentForm">
+							<form class="form-horizontal m-t" id="commentForm" onSubmit="return uploadForm();">
 								<div class="form-group">
 									<label class="col-sm-3 control-label">款式内部编号：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">
+										<input id="numstr" name="numstr" minlength="2" type="text" class="form-control" required="" aria-required="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">数量：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">
+										<input id="number" name="number" minlength="1" type="text" class="form-control" required="number" aria-required="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">出厂价：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">
+										<input id="radeprice" name="radeprice" minlength="1" type="text" class="form-control" required="number" aria-required="true">
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="col-sm-3 control-label">入库时间：</label>
+                                 <label class="col-sm-3 control-label">入库时间：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">
-									</div>
-								</div>
+										<input id="intotime" name="intotime" minlength="1" type="date" required>
+									</div> 
+                                      
+                                </div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">创建人：</label>
 									<div class="col-sm-8">
-										<label class="col-sm-3 control-label">以当前登录人为准,自动生成</label>
+										<label >以当前登录人为准,自动生成</label>
 									</div>
 								</div>
 								
@@ -78,7 +122,9 @@
 					</div>
               
             </div>
-		</div>	
+		</div>
+		
 	</div>
+	
 </body>
 </html>

@@ -8,6 +8,41 @@
     <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
     <link href="css/animate.css" rel="stylesheet">
     <link href="css/style.css?v=4.1.0" rel="stylesheet">
+	<script src="js/jquery.min.js?v=2.1.4"></script>
+	<script>
+		//form 提交
+		function uploadForm(){
+			var stock={
+				numstr:$("#numstr").val(),
+				innumber:$("#innumber").val(),
+				nownumber:$("#nownumber").val()
+			};
+			console.log(stock);
+			alert(stock);
+			$.ajax({
+            //几个参数需要注意一下
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "http://localhost:8081/lecture/insertStock" ,//url
+                data: JSON.stringify(stock),
+				contentType: "application/json;charset=UTF-8",
+                success: function (rsp) {
+                   	console.log(rsp);
+					if(rsp.respCode==="0"){
+						alert("添加成功");
+						window.location.href="tableKC.html";
+					}else{
+						alert(rsp.respDesc);
+					}
+					
+					
+				},
+				error:function(){
+					 window.location.href="500.html";
+				}
+            });
+		}
+	</script>
 </head>
 
 <body>
@@ -23,25 +58,25 @@
 								<div class="form-group">
 									<label class="col-sm-3 control-label">款式内部编号：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">
+										<input id="numstr" name="numstr" minlength="2" type="text" class="form-control" required="" aria-required="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">入库数量：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">
+										<input id="innumber" name="innumber" minlength="1" type="text" class="form-control" required="number" aria-required="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">现库存数量：</label>
 									<div class="col-sm-8">
-										<input id="" name="name" minlength="2" type="text" class="form-control" required="" aria-required="true">
+										<input id="nownumber" name="nownumber" minlength="1" type="text" class="form-control" required="number" aria-required="true">
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-3 control-label">创建人：</label>
 									<div class="col-sm-8">
-										<label class="col-sm-3 control-label">以当前登录人为准,自动生成</label>
+										<label >以当前登录人为准,自动生成</label>
 									</div>
 								</div>
 								
@@ -62,7 +97,7 @@
 -->
 								<div class="form-group">
 									<div class="col-sm-4 col-sm-offset-3">
-										<button class="btn btn-primary" type="submit">提交</button>
+										<button class="btn btn-primary" type="button" onClick="uploadForm()">提交</button>
 										<button class="btn btn-primary" type="button" onclick="javascript:history.back(-1);">返回</button>
 									</div>
 								</div>

@@ -89,9 +89,9 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/logout")
-    public String logout(HttpSession session) {
-        session.removeAttribute("user");
-        return "redirect:/index.html";
-    }
+//    @RequestMapping(value = "/logout")
+//    public String logout(HttpSession session) {
+//        session.removeAttribute("user");
+//        return "redirect:/index.html";
+//    }
 }

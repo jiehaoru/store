@@ -64,6 +64,7 @@ public class RefactoryController extends BaseController {
             if (null!=ss) {
                 Style style=new Style();
                 style.setNumstr(ss);
+                style.setFlag(1);//有效的
                 styles = styleService.selectStyleBy(style);
                 if (styles.size()==0) { //没有这个款式
                     baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -145,14 +146,23 @@ public class RefactoryController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/selectRefactoryListByFlag",method = RequestMethod.GET)
-    public BaseRsp<List<Refactory>> selectRefactoryListByFlag(){
-        BaseRsp<List<Refactory>> baseRsp=new BaseRsp<List<Refactory>>();
+    public BaseRsp<List<RefactoryVO>> selectRefactoryListByFlag(){
+        BaseRsp<List<RefactoryVO>> baseRsp=new BaseRsp<List<RefactoryVO>>();
         Refactory refactory=new Refactory();
         List<Refactory> list =null;
+        List<RefactoryVO> listVO=new ArrayList<>();
         try {
             refactory.setFlag(1);
             list =refactoryService.selectRefactoryListBy(refactory);
-            baseRsp.setData(list);
+            if (list.size()>0){
+                for (Refactory refactory1 : list) {
+                    RefactoryVO vo=new RefactoryVO();
+                    BeanUtils.copyProperties(refactory1,vo);
+                    vo.setId(String.valueOf(refactory1.getId()));
+                    listVO.add(vo);
+                }
+            }
+            baseRsp.setData(listVO);
             baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS);
         }catch (Exception e){
@@ -311,7 +321,7 @@ public class RefactoryController extends BaseController {
                 stylefac.setRefactoryid(Long.valueOf(refactoryVO.getId()));
                 ree= stylefacService.deleteBy(stylefac);
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
-                baseRsp.setRespCode(BaseRspConstants.RSP_DESC_SUCCESS+",影响行数"+re+","+ree);
+                baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_SUCCESS+",影响行数"+re+","+ree);
             }else {
                 baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
                 baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",影响行数"+re+","+ree);
