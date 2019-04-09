@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -50,9 +51,19 @@ public class StyleController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/insertStyle", method = RequestMethod.POST)
-    public BaseRsp insertStyle(@RequestBody StyleVO styleVO) {
+    public BaseRsp insertStyle(@RequestBody StyleVO styleVO,HttpSession session) {
 
         BaseRsp baseRsp=new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         if(null==styleVO.getStyleid()){
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+"，入库信息为空");
@@ -66,6 +77,7 @@ public class StyleController extends BaseController {
             String numstr=style.getStyleid()+style.getStandard()+style.getColour();
             style.setNumstr(numstr);
             style.setCreatetime(new Date());
+            style.setOperator(super.isLogin(session).getUsername());
             int i = styleService.insertStyle(style);
             if(i>0){
                 baseRsp.setRespCode(BaseRspConstants.CODE_SUCCESS);
@@ -287,9 +299,18 @@ public class StyleController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/updateStyle",method = RequestMethod.POST)
-    public BaseRsp updateStyle(@RequestBody StyleVO styleVO) {
+    public BaseRsp updateStyle(@RequestBody StyleVO styleVO,HttpSession session) {
        BaseRsp baseRsp=new BaseRsp();
-
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
        if(null==styleVO.getId()){
            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",主键id为空");
@@ -326,8 +347,18 @@ public class StyleController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/deleteByPrimaryKey",method = RequestMethod.GET)
-    public BaseRsp deleteByPrimaryKey(@RequestBody StyleVO styleVO) {
+    public BaseRsp deleteByPrimaryKey(@RequestBody StyleVO styleVO,HttpSession session) {
         BaseRsp baseRsp=new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         if (null==styleVO.getId()) {
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
             baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",id值为空");

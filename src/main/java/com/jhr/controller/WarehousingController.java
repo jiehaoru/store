@@ -3,6 +3,7 @@ package com.jhr.controller;
 import com.jhr.controller.vo.StockVO;
 import com.jhr.controller.vo.WarehousingVO;
 import com.jhr.entity.*;
+import com.jhr.service.StockService;
 import com.jhr.service.StyleService;
 import com.jhr.service.StylewarService;
 import com.jhr.service.WarehousingService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +47,7 @@ public class  WarehousingController extends  BaseController {
     @Autowired
     private StylewarService stylewarService;
     @Autowired
-    private  StockController stockController;
+    private StockService stockService;
 
     /**
      * 插入 入库条目
@@ -54,9 +56,21 @@ public class  WarehousingController extends  BaseController {
      */
     @RequestMapping(value = "/insertWare",method = RequestMethod.POST)
     @ResponseBody
-    public BaseRsp insertWare(@RequestBody WarehousingVO warehousingVO){
+    public BaseRsp insertWare(@RequestBody WarehousingVO warehousingVO,HttpSession session){
         BaseRsp baseRsp=new BaseRsp();
-        StockVO stock=new StockVO();//自动插入库存表
+
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
+
+        Stock stock=new Stock();//自动插入库存表
         try {
             List<Style> styles=new ArrayList<Style>();
             //
@@ -83,6 +97,7 @@ public class  WarehousingController extends  BaseController {
             warehousing.setId(Sequence.getInstance().nextId());
             warehousing.setFlag(1);//1 有效
             warehousing.setCreatetime(new Date());
+            warehousing.setOperator(super.isLogin(session).getUsername());
             int i = warehousingService.insertWarehousing(warehousing);
             int ii=0;
             if (i>0){
@@ -105,7 +120,11 @@ public class  WarehousingController extends  BaseController {
                 stock.setNumstr(warehousing.getNumstr());
                 stock.setInnumber(warehousing.getNumber());
                 stock.setNownumber(warehousing.getNumber());
-                stockController.insertStock(stock);
+                stock.setId(Sequence.getInstance().nextId());
+                stock.setFlag(1);//1 有效
+                stock.setCreatetime(new Date());
+                stock.setOperator(super.isLogin(session).getUsername());
+                stockService.insertStock(stock);
 
             }else {
                 baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -253,8 +272,18 @@ public class  WarehousingController extends  BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/updateWarehousing",method = RequestMethod.POST)
-    public BaseRsp updateWarehousing(@RequestBody WarehousingVO warehousingVO) {
+    public BaseRsp updateWarehousing(@RequestBody WarehousingVO warehousingVO,HttpSession session) {
         BaseRsp baseRsp=new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         if (null==warehousingVO.getId()) {
             LOGGER.error("WarehousingController========>updateWarehousing失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -292,8 +321,18 @@ public class  WarehousingController extends  BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/deleteWarehousing",method = RequestMethod.POST)
-    public BaseRsp deleteWarehousing(@RequestBody WarehousingVO warehousingVO) {
+    public BaseRsp deleteWarehousing(@RequestBody WarehousingVO warehousingVO,HttpSession session) {
         BaseRsp baseRsp=new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         if (null==warehousingVO.getId()) {
             LOGGER.error("WarehousingController========>deleteWarehousing失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);

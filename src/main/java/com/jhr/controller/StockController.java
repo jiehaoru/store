@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,8 +52,18 @@ public class StockController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/insertStock",method = RequestMethod.POST)
-    public BaseRsp insertStock(@RequestBody StockVO stockVO){
+    public BaseRsp insertStock(@RequestBody StockVO stockVO,HttpSession session){
         BaseRsp baseRsp=new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
 
         try {
             List<Style> styles=new ArrayList<Style>();
@@ -75,6 +86,7 @@ public class StockController extends BaseController {
             stock.setId(Sequence.getInstance().nextId());
             stock.setFlag(1);//1 有效
             stock.setCreatetime(new Date());
+            stock.setOperator(super.isLogin(session).getUsername());
             int i = stockService.insertStock(stock);
             int ii=0;
             if (i>0){
@@ -235,8 +247,18 @@ public class StockController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/updateStock",method = RequestMethod.POST)
-    public BaseRsp updateStock(@RequestBody StockVO stockVO) {
+    public BaseRsp updateStock(@RequestBody StockVO stockVO,HttpSession session) {
         BaseRsp baseRsp=new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         if (null==stockVO.getId()) {
             LOGGER.error("StockController========>updateStock失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
@@ -274,8 +296,18 @@ public class StockController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/deleteStock",method = RequestMethod.POST)
-    public BaseRsp deleteStock(@RequestBody StockVO stockVO) {
+    public BaseRsp deleteStock(@RequestBody StockVO stockVO,HttpSession session) {
         BaseRsp baseRsp=new BaseRsp();
+        if (super.isLogin(session) == null) {
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户未登录");
+            return baseRsp;
+        }
+        if (super.isLogin(session).getAuthorityid()>0){
+            baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
+            baseRsp.setRespDesc(BaseRspConstants.RSP_DESC_FAILUR+",用户权限不足");
+            return baseRsp;
+        }
         if (null==stockVO.getId()) {
             LOGGER.error("StockController========>deleteWarehousing失败,id为空");
             baseRsp.setRespCode(BaseRspConstants.CODE_FAILUR);
